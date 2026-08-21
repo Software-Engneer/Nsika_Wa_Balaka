@@ -223,6 +223,63 @@
   transform: scale(0.95);
 }
 
+.accountWrapper {
+  position: relative;
+}
+
+.accountDropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
+  padding: 0.5rem;
+  min-width: 180px;
+  z-index: 1001;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.accountLink {
+  display: block;
+  padding: 0.6rem 0.75rem;
+  border-radius: 8px;
+  text-decoration: none;
+  color: #0f172a;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: all 0.15s ease;
+}
+
+.accountLink:hover {
+  background: #f1f5f9;
+  color: #0ea5e9;
+}
+
+.accountSignOut {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 0.6rem 0.75rem;
+  border-radius: 8px;
+  border: none;
+  background: transparent;
+  color: #ef4444;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  font-family: inherit;
+}
+
+.accountSignOut:hover {
+  background: #fef2f2;
+  color: #dc2626;
+}
+
 .cartBadge {
   position: absolute;
   top: 2px;
@@ -431,6 +488,56 @@
 
 .getInTouchButton:active {
   transform: translateY(0);
+}
+
+.mobileAccount {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #e2e8f0;
+}
+
+.mobileAccountLink {
+  display: block;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  text-decoration: none;
+  color: #0f172a;
+  font-size: 1rem;
+  font-weight: 500;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  transition: all 0.15s ease;
+  text-align: center;
+}
+
+.mobileAccountLink:hover {
+  background: #f1f5f9;
+  color: #0ea5e9;
+  border-color: #38bdf8;
+}
+
+.mobileSignOut {
+  display: block;
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  border: 1px solid #fecaca;
+  background: #fef2f2;
+  color: #dc2626;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  text-align: center;
+  font-family: inherit;
+}
+
+.mobileSignOut:hover {
+  background: #fee2e2;
+  border-color: #f87171;
 }
 
 @media (min-width: 901px) {

@@ -11,7 +11,9 @@ const Header = () => {
   const [showContact, setShowContact] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [cartCount, setCartCount] = useState(3);
+  const [isAccountOpen, setIsAccountOpen] = useState(false);
   const navRef = useRef(null);
+  const accountRef = useRef(null);
 
   const isActive = (path) => {
     return location.pathname === path ? styles.active : "";
@@ -41,6 +43,9 @@ const Header = () => {
       if (navRef.current && !navRef.current.contains(event.target)) {
         setIsMenuOpen(false);
       }
+      if (accountRef.current && !accountRef.current.contains(event.target)) {
+        setIsAccountOpen(false);
+      }
     };
 
     if (isMenuOpen) {
@@ -54,7 +59,7 @@ const Header = () => {
       document.removeEventListener("mousedown", handleClickOutside);
       document.body.style.overflow = "unset";
     };
-  }, [isMenuOpen]);
+  }, [isMenuOpen, isAccountOpen]);
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -75,7 +80,7 @@ const Header = () => {
             </svg>
           </span>
           <span className={styles.logoText}>
-            <span className={styles.logoHighlight}>Msika</span> Wa Balaka
+            <span className={styles.logoHighlight}>Nsika</span> Wa Balaka
           </span>
         </a>
 
@@ -84,11 +89,11 @@ const Header = () => {
             <span className={styles.linkText}>Home</span>
             <span className={styles.linkUnderline}></span>
           </a>
-          <a href="/projects" className={`${styles.navLink} ${isActive('/projects')}`}>
+          <a href="/products" className={`${styles.navLink} ${isActive('/products')}`}>
             <span className={styles.linkText}>Products</span>
             <span className={styles.linkUnderline}></span>
           </a>
-          <a href="/creative" className={`${styles.navLink} ${isActive('/creative')}`}>
+          <a href="/categories" className={`${styles.navLink} ${isActive('/categories')}`}>
             <span className={styles.linkText}>Categories</span>
             <span className={styles.linkUnderline}></span>
           </a>
@@ -146,12 +151,27 @@ const Header = () => {
             )}
           </button>
 
-          <button className={styles.iconButton} aria-label="Account">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-              <circle cx="12" cy="7" r="4" />
-            </svg>
-          </button>
+          <div className={styles.accountWrapper} ref={accountRef}>
+            <button
+              className={styles.iconButton}
+              aria-label="Account"
+              aria-expanded={isAccountOpen}
+              onClick={() => setIsAccountOpen((prev) => !prev)}
+            >
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                <circle cx="12" cy="7" r="4" />
+              </svg>
+            </button>
+
+            {isAccountOpen && (
+              <div className={styles.accountDropdown}>
+                <a href="/login" className={styles.accountLink}>Sign In</a>
+                <a href="/register" className={styles.accountLink}>Register</a>
+                <button className={styles.accountSignOut}>Sign Out</button>
+              </div>
+            )}
+          </div>
 
           <button
             className={styles.ctaButton}
@@ -198,10 +218,10 @@ const Header = () => {
           <a href="/" className={`${styles.navLink} ${isActive('/')}`} onClick={() => setIsMenuOpen(false)}>
             <span className={styles.linkText}>Home</span>
           </a>
-          <a href="/projects" className={`${styles.navLink} ${isActive('/projects')}`} onClick={() => setIsMenuOpen(false)}>
+          <a href="/products" className={`${styles.navLink} ${isActive('/products')}`} onClick={() => setIsMenuOpen(false)}>
             <span className={styles.linkText}>Products</span>
           </a>
-          <a href="/creative" className={`${styles.navLink} ${isActive('/creative')}`} onClick={() => setIsMenuOpen(false)}>
+          <a href="/categories" className={`${styles.navLink} ${isActive('/categories')}`} onClick={() => setIsMenuOpen(false)}>
             <span className={styles.linkText}>Categories</span>
           </a>
           <a href="/deals" className={`${styles.navLink} ${isActive('/deals')}`} onClick={() => setIsMenuOpen(false)}>
@@ -213,6 +233,11 @@ const Header = () => {
           <a href="/contact" className={`${styles.navLink} ${isActive('/contact')}`} onClick={() => setIsMenuOpen(false)}>
             <span className={styles.linkText}>Contact</span>
           </a>
+          <div className={styles.mobileAccount}>
+            <a href="/login" className={styles.mobileAccountLink} onClick={() => setIsMenuOpen(false)}>Sign In</a>
+            <a href="/register" className={styles.mobileAccountLink} onClick={() => setIsMenuOpen(false)}>Register</a>
+            <button className={styles.mobileSignOut} onClick={() => setIsMenuOpen(false)}>Sign Out</button>
+          </div>
           <button
             className={styles.getInTouchButton}
             onClick={() => {
