@@ -4,6 +4,7 @@ import Header from './components/pages/Header';
 import Home from './components/pages/Home';
 import Registration from './components/pages/Registration';
 import SignIn from './components/pages/SignIn';
+import SignOut from './components/pages/SignOut';
 import './App.css';
 
 
@@ -15,6 +16,7 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/register" element={<Registration />} />
             <Route path="/login" element={<SignIn />} />
+            <Route path="/logout" element={<SignOut />} />
           </Routes>
     </Router>
   );

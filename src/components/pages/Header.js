@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import styles from "../styles/header.module.css";
 import Contact from "./Contact";
 import Modal from "../Modal";
 
 const Header = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [showContact, setShowContact] = useState(false);
@@ -168,7 +169,7 @@ const Header = () => {
               <div className={styles.accountDropdown}>
                 <a href="/login" className={styles.accountLink}>Sign In</a>
                 <a href="/register" className={styles.accountLink}>Register</a>
-                <button className={styles.accountSignOut}>Sign Out</button>
+                <button className={styles.accountSignOut} onClick={() => navigate('/logout')}>Sign Out</button>
               </div>
             )}
           </div>
@@ -236,7 +237,7 @@ const Header = () => {
           <div className={styles.mobileAccount}>
             <a href="/login" className={styles.mobileAccountLink} onClick={() => setIsMenuOpen(false)}>Sign In</a>
             <a href="/register" className={styles.mobileAccountLink} onClick={() => setIsMenuOpen(false)}>Register</a>
-            <button className={styles.mobileSignOut} onClick={() => setIsMenuOpen(false)}>Sign Out</button>
+            <button className={styles.mobileSignOut} onClick={() => { navigate('/logout'); setIsMenuOpen(false); }}>Sign Out</button>
           </div>
           <button
             className={styles.getInTouchButton}
