@@ -11,10 +11,11 @@ const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [showContact, setShowContact] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [cartCount, setCartCount] = useState(3);
   const [isAccountOpen, setIsAccountOpen] = useState(false);
+  const [isExploreOpen, setIsExploreOpen] = useState(false);
   const navRef = useRef(null);
   const accountRef = useRef(null);
+  const exploreRef = useRef(null);
 
   const isActive = (path) => {
     return location.pathname === path ? styles.active : "";
@@ -47,6 +48,9 @@ const Header = () => {
       if (accountRef.current && !accountRef.current.contains(event.target)) {
         setIsAccountOpen(false);
       }
+      if (exploreRef.current && !exploreRef.current.contains(event.target)) {
+        setIsExploreOpen(false);
+      }
     };
 
     if (isMenuOpen) {
@@ -72,42 +76,72 @@ const Header = () => {
   return (
     <header className={`${styles.header} ${isScrolled ? styles.scrolled : ""}`}>
       <div className={styles.headerContent}>
-        <a href="/" className={styles.logo} title="Msika Wa Balaka - Home">
+        <a href="/" className={styles.logo} title="Kwathu - Home">
           <span className={styles.logoIcon}>
             <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
-              <line x1="3" y1="6" x2="21" y2="6" />
-              <path d="M16 10a4 4 0 0 1-8 0" />
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+              <circle cx="9" cy="7" r="4" />
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+              <path d="M16 3.13a4 4 0 0 1 0 7.75" />
             </svg>
           </span>
           <span className={styles.logoText}>
-            <span className={styles.logoHighlight}>Nsika</span> Wa Balaka
+            <span className={styles.logoHighlight}>Kwathu</span>
           </span>
         </a>
 
         <nav className={styles.desktopNav} aria-label="Main navigation">
           <a href="/" className={`${styles.navLink} ${isActive('/')}`}>
-            <span className={styles.linkText}>Home</span>
+            <span className={styles.linkText}>Feed</span>
             <span className={styles.linkUnderline}></span>
           </a>
-          <a href="/products" className={`${styles.navLink} ${isActive('/products')}`}>
-            <span className={styles.linkText}>Products</span>
+          <div className={styles.navDropdown} ref={exploreRef}>
+            <button
+              className={`${styles.navLink} ${isActive('/explore')}`}
+              onClick={() => setIsExploreOpen((prev) => !prev)}
+              aria-expanded={isExploreOpen}
+            >
+              <span className={styles.linkText}>Explore</span>
+              <svg className={`${styles.navChevron} ${isExploreOpen ? styles.navChevronOpen : ''}`} width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="6 9 12 15 18 9" />
+              </svg>
+            </button>
+
+            {isExploreOpen && (
+              <div className={styles.navDropdownMenu}>
+                <button className={styles.navDropdownItem} onClick={() => { navigate('/explore'); setIsExploreOpen(false); }}>
+                  <span className={styles.dropdownIcon}>🔥</span>
+                  Trending
+                </button>
+                <button className={styles.navDropdownItem} onClick={() => { navigate('/explore'); setIsExploreOpen(false); }}>
+                  <span className={styles.dropdownIcon}>📰</span>
+                  News
+                </button>
+                <button className={styles.navDropdownItem} onClick={() => { navigate('/explore'); setIsExploreOpen(false); }}>
+                  <span className={styles.dropdownIcon}>🎬</span>
+                  Entertainment
+                </button>
+                <button className={styles.navDropdownItem} onClick={() => { navigate('/explore'); setIsExploreOpen(false); }}>
+                  <span className={styles.dropdownIcon}>⚽</span>
+                  Sports
+                </button>
+                <button className={styles.navDropdownItem} onClick={() => { navigate('/categories'); setIsExploreOpen(false); }}>
+                  <span className={styles.dropdownIcon}>🛒</span>
+                  Marketplace
+                </button>
+              </div>
+            )}
+          </div>
+          <a href="/messages" className={`${styles.navLink} ${isActive('/messages')}`}>
+            <span className={styles.linkText}>Messages</span>
             <span className={styles.linkUnderline}></span>
           </a>
-          <a href="/categories" className={`${styles.navLink} ${isActive('/categories')}`}>
-            <span className={styles.linkText}>Categories</span>
+          <a href="/notifications" className={`${styles.navLink} ${isActive('/notifications')}`}>
+            <span className={styles.linkText}>Notifications</span>
             <span className={styles.linkUnderline}></span>
           </a>
-          <a href="/deals" className={`${styles.navLink} ${isActive('/deals')}`}>
-            <span className={styles.linkText}>Deals</span>
-            <span className={styles.linkUnderline}></span>
-          </a>
-          <a href="/about" className={`${styles.navLink} ${isActive('/about')}`}>
-            <span className={styles.linkText}>About</span>
-            <span className={styles.linkUnderline}></span>
-          </a>
-          <a href="/contact" className={`${styles.navLink} ${isActive('/contact')}`}>
-            <span className={styles.linkText}>Contact</span>
+          <a href="/profile" className={`${styles.navLink} ${isActive('/profile')}`}>
+            <span className={styles.linkText}>Profile</span>
             <span className={styles.linkUnderline}></span>
           </a>
         </nav>
@@ -119,11 +153,11 @@ const Header = () => {
           </svg>
           <input
             type="text"
-            placeholder="Search products..."
+            placeholder="Search people, posts..."
             className={styles.searchInput}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            aria-label="Search products"
+            aria-label="Search people, posts"
           />
           {searchQuery && (
             <button
@@ -141,15 +175,12 @@ const Header = () => {
         </form>
 
         <div className={styles.headerActions}>
-          <button className={styles.iconButton} aria-label="Shopping cart">
+          <button className={styles.iconButton} aria-label="Notifications">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <circle cx="9" cy="21" r="1" />
-              <circle cx="20" cy="21" r="1" />
-              <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
+              <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9" />
+              <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0" />
             </svg>
-            {cartCount > 0 && (
-              <span className={styles.cartBadge}>{cartCount}</span>
-            )}
+            <span className={styles.cartBadge}>3</span>
           </button>
 
           <div className={styles.accountWrapper} ref={accountRef}>
@@ -160,15 +191,17 @@ const Header = () => {
               onClick={() => setIsAccountOpen((prev) => !prev)}
             >
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
                 <circle cx="12" cy="7" r="4" />
               </svg>
             </button>
 
             {isAccountOpen && (
               <div className={styles.accountDropdown}>
+                <a href="/profile" className={styles.accountLink}>Profile</a>
+                <a href="/settings" className={styles.accountLink}>Settings</a>
                 <a href="/login" className={styles.accountLink}>Sign In</a>
-                <a href="/register" className={styles.accountLink}>Register</a>
+                <a href="/register" className={styles.accountLink}>Sign Up</a>
                 <button className={styles.accountSignOut} onClick={() => navigate('/logout')}>Sign Out</button>
               </div>
             )}
@@ -176,10 +209,10 @@ const Header = () => {
 
           <button
             className={styles.ctaButton}
-            onClick={() => setShowContact(true)}
-            aria-label="Open contact form"
+            onClick={() => navigate('/create')}
+            aria-label="Create post"
           >
-            GET IN TOUCH
+            Create
           </button>
         </div>
 
@@ -207,48 +240,38 @@ const Header = () => {
           </svg>
           <input
             type="text"
-            placeholder="Search products..."
+            placeholder="Search people, posts..."
             className={styles.searchInput}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            aria-label="Search products"
+            aria-label="Search people, posts"
           />
         </form>
 
         <div className={styles.mobileNavList}>
           <a href="/" className={`${styles.navLink} ${isActive('/')}`} onClick={() => setIsMenuOpen(false)}>
-            <span className={styles.linkText}>Home</span>
+            <span className={styles.linkText}>Feed</span>
           </a>
-          <a href="/products" className={`${styles.navLink} ${isActive('/products')}`} onClick={() => setIsMenuOpen(false)}>
-            <span className={styles.linkText}>Products</span>
+          <a href="/explore" className={`${styles.navLink} ${isActive('/explore')}`} onClick={() => setIsMenuOpen(false)}>
+            <span className={styles.linkText}>Explore</span>
           </a>
           <a href="/categories" className={`${styles.navLink} ${isActive('/categories')}`} onClick={() => setIsMenuOpen(false)}>
-            <span className={styles.linkText}>Categories</span>
+            <span className={styles.linkText}>Marketplace</span>
           </a>
-          <a href="/deals" className={`${styles.navLink} ${isActive('/deals')}`} onClick={() => setIsMenuOpen(false)}>
-            <span className={styles.linkText}>Deals</span>
+          <a href="/messages" className={`${styles.navLink} ${isActive('/messages')}`} onClick={() => setIsMenuOpen(false)}>
+            <span className={styles.linkText}>Messages</span>
           </a>
-          <a href="/about" className={`${styles.navLink} ${isActive('/about')}`} onClick={() => setIsMenuOpen(false)}>
-            <span className={styles.linkText}>About</span>
+          <a href="/notifications" className={`${styles.navLink} ${isActive('/notifications')}`} onClick={() => setIsMenuOpen(false)}>
+            <span className={styles.linkText}>Notifications</span>
           </a>
-          <a href="/contact" className={`${styles.navLink} ${isActive('/contact')}`} onClick={() => setIsMenuOpen(false)}>
-            <span className={styles.linkText}>Contact</span>
+          <a href="/profile" className={`${styles.navLink} ${isActive('/profile')}`} onClick={() => setIsMenuOpen(false)}>
+            <span className={styles.linkText}>Profile</span>
           </a>
           <div className={styles.mobileAccount}>
             <a href="/login" className={styles.mobileAccountLink} onClick={() => setIsMenuOpen(false)}>Sign In</a>
-            <a href="/register" className={styles.mobileAccountLink} onClick={() => setIsMenuOpen(false)}>Register</a>
+            <a href="/register" className={styles.mobileAccountLink} onClick={() => setIsMenuOpen(false)}>Sign Up</a>
             <button className={styles.mobileSignOut} onClick={() => { navigate('/logout'); setIsMenuOpen(false); }}>Sign Out</button>
           </div>
-          <button
-            className={styles.getInTouchButton}
-            onClick={() => {
-              setShowContact(true);
-              setIsMenuOpen(false);
-            }}
-            aria-label="Open contact form"
-          >
-            GET IN TOUCH
-          </button>
         </div>
       </nav>
 

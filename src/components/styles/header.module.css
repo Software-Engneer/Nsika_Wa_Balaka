@@ -24,7 +24,7 @@
   justify-content: space-between;
   width: 100%;
   box-sizing: border-box;
-  gap: 1.5rem;
+  gap: 1rem;
 }
 
 .logo {
@@ -73,13 +73,12 @@
 
 .desktopNav {
   display: none;
+  align-items: center;
+  gap: 0.25rem;
 }
 
 .desktopNavList {
-  display: flex;
-  flex-direction: row;
-  gap: 0.25rem;
-  align-items: center;
+  display: none;
 }
 
 .navLink {
@@ -90,10 +89,16 @@
   padding: 0.5rem 0.75rem;
   border-radius: 6px;
   transition: all 0.2s ease;
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
   letter-spacing: 0.2px;
   white-space: nowrap;
   position: relative;
+  background: transparent;
+  border: none;
+  font-family: inherit;
+  cursor: pointer;
 }
 
 .navLink:hover,
@@ -101,6 +106,17 @@
 .navLink:active {
   color: #0ea5e9;
   background: rgba(14, 165, 233, 0.06);
+}
+
+.navDropdown:hover .navLink,
+.navDropdown .navLink:hover {
+  color: #0ea5e9;
+  background: rgba(14, 165, 233, 0.06);
+}
+
+.navLink.active {
+  color: #0ea5e9;
+  background: rgba(14, 165, 233, 0.1);
 }
 
 .navLink.active {
@@ -278,6 +294,100 @@
 .accountSignOut:hover {
   background: #fef2f2;
   color: #dc2626;
+}
+
+.navDropdown {
+  position: relative;
+  height: 100%;
+  display: inline-flex;
+  align-items: center;
+}
+
+.navDropdownMenu {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: -0.5rem;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
+  padding: 0.5rem;
+  min-width: 220px;
+  z-index: 1001;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.navDropdownItem {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  width: 100%;
+  text-align: left;
+  padding: 0.6rem 0.75rem;
+  background: transparent;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  color: #0f172a;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  font-family: inherit;
+}
+
+.navDropdownItem:hover {
+  background: #f1f5f9;
+  color: #0ea5e9;
+}
+
+.dropdownIcon {
+  font-size: 1.1rem;
+}
+
+.navChevron {
+  color: #94a3b8;
+  transition: transform 0.2s ease;
+}
+
+.navChevronOpen {
+  transform: rotate(180deg);
+  color: #0ea5e9;
+}
+
+.mobileCategories {
+  position: relative;
+}
+
+.mobileCategoriesMenu {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid #e2e8f0;
+}
+
+.mobileCategoriesItem {
+  width: 100%;
+  text-align: left;
+  padding: 0.75rem 1rem;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 1rem;
+  color: #0f172a;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  font-family: inherit;
+}
+
+.mobileCategoriesItem:hover {
+  background: #f1f5f9;
+  color: #0ea5e9;
+  border-color: #38bdf8;
 }
 
 .cartBadge {
@@ -542,7 +652,11 @@
 
 @media (min-width: 901px) {
   .desktopNav {
-    display: block;
+    display: flex !important;
+  }
+
+  .desktopNavList {
+    display: flex !important;
   }
 
   .mobileNav {
@@ -565,6 +679,15 @@
 
   .ctaButton {
     padding: 0.5rem 1rem;
+    font-size: 0.8rem;
+  }
+
+  .desktopNav {
+    gap: 0.15rem;
+  }
+
+  .navLink {
+    padding: 0.4rem 0.6rem;
     font-size: 0.8rem;
   }
 }

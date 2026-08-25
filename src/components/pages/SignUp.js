@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import styles from '../styles/Registration.module.css';
+import styles from '../styles/SignUp.module.css';
 
 function Registration() {
   const [formData, setFormData] = useState({
@@ -21,14 +21,14 @@ function Registration() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log('Registration submitted:', formData);
+    console.log('Sign up submitted:', formData);
   };
 
   return (
     <div className={styles.page}>
       <div className={styles.card}>
         <div className={styles.header}>
-          <h1 className={styles.title}>Create Account</h1>
+          <h1 className={styles.title}>Sign Up</h1>
           <p className={styles.subtitle}>Join Msika Wa Balaka marketplace</p>
         </div>
 
@@ -116,7 +116,7 @@ function Registration() {
             </span>
           </label>
 
-          <button type="submit" className={styles.submitButton}>Create Account</button>
+          <button type="submit" className={styles.submitButton}>Sign Up</button>
 
           <p className={styles.footerText}>
             Already have an account? <a href="/login" className={styles.link}>Sign in</a>

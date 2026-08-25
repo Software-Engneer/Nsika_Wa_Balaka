@@ -1,147 +1,147 @@
 import React from 'react';
 import styles from '../styles/Home.module.css';
 
-const categories = [
-  { id: 1, name: 'Electronics', icon: '📱', count: 120 },
-  { id: 2, name: 'Fashion', icon: '👕', count: 85 },
-  { id: 3, name: 'Home & Garden', icon: '🏠', count: 64 },
-  { id: 4, name: 'Vehicles', icon: '🚗', count: 42 },
-  { id: 5, name: 'Jobs', icon: '💼', count: 33 },
-  { id: 6, name: 'Services', icon: '🔧', count: 28 },
-];
-
-const featuredListings = [
+const posts = [
   {
     id: 1,
-    title: 'Samsung Galaxy S23 Ultra',
-    price: 'MK 450,000',
-    location: 'Lilongwe',
-    image: 'https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?w=400&h=300&fit=crop',
-    category: 'Electronics',
+    author: 'Chifundo Banda',
+    avatar: '👤',
+    time: '2 hours ago',
+    content: 'Just arrived in Balaka! The weather is beautiful today. 🌤️',
+    likes: 24,
+    comments: 5,
+    shares: 2,
   },
   {
     id: 2,
-    title: 'Toyota Corolla 2018',
-    price: 'MK 12,500,000',
-    location: 'Blantyre',
-    image: 'https://images.unsplash.com/photo-1621007947382-bb3c3968e3bb?w=400&h=300&fit=crop',
-    category: 'Vehicles',
+    author: 'Grace Phiri',
+    avatar: '👩',
+    time: '4 hours ago',
+    content: 'Community meeting at the local hall tomorrow at 10 AM. Everyone welcome! 📢',
+    likes: 56,
+    comments: 12,
+    shares: 8,
   },
   {
     id: 3,
-    title: '2 Bedroom Apartment',
-    price: 'MK 85,000/month',
-    location: 'Mzuzu',
-    image: 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=400&h=300&fit=crop',
-    category: 'Property',
-  },
-  {
-    id: 4,
-    title: 'MacBook Pro M2',
-    price: 'MK 620,000',
-    location: 'Lilongwe',
-    image: 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=400&h=300&fit=crop',
-    category: 'Electronics',
+    author: 'James Kachali',
+    avatar: '👨',
+    time: '6 hours ago',
+    content: 'New business opening in town - Kwathu Café! Come support local entrepreneurship. ☕',
+    likes: 89,
+    comments: 23,
+    shares: 15,
   },
 ];
 
-const stats = [
-  { label: 'Active Listings', value: '2,500+' },
-  { label: 'Verified Sellers', value: '1,200+' },
-  { label: 'Happy Buyers', value: '5,000+' },
-  { label: 'Cities Covered', value: '12+' },
+const stories = [
+  { id: 1, name: 'Your Story', avatar: '➕' },
+  { id: 2, name: 'Chifundo', avatar: '👤' },
+  { id: 3, name: 'Grace', avatar: '👩' },
+  { id: 4, name: 'James', avatar: '👨' },
+  { id: 5, name: 'Mary', avatar: '👩‍🦰' },
 ];
 
 function Home() {
   return (
     <div className={styles.page}>
-      <section className={styles.hero}>
-        <div className={styles.heroInner}>
-          <h1 className={styles.heroTitle}>
-            Buy & Sell in <span className={styles.highlight}>Malawi</span>
-          </h1>
-          <p className={styles.heroSubtitle}>
-            The trusted marketplace for electronics, vehicles, property, jobs, and more.
-          </p>
+      <div className={styles.container}>
+        <div className={styles.leftSidebar}>
+          <div className={styles.userCard}>
+            <div className={styles.userAvatar}>👤</div>
+            <div className={styles.userInfo}>
+              <h3 className={styles.userName}>Your Name</h3>
+              <p className={styles.userHandle}>@username</p>
+            </div>
+          </div>
+          <nav className={styles.sidebarNav}>
+            <a href="/" className={`${styles.sidebarLink} ${styles.active}`}>
+              <span>🏠</span> Feed
+            </a>
+            <a href="/explore" className={styles.sidebarLink}>
+              <span>🔍</span> Explore
+            </a>
+            <a href="/messages" className={styles.sidebarLink}>
+              <span>💬</span> Messages
+            </a>
+            <a href="/notifications" className={styles.sidebarLink}>
+              <span>🔔</span> Notifications
+            </a>
+            <a href="/profile" className={styles.sidebarLink}>
+              <span>👤</span> Profile
+            </a>
+          </nav>
+        </div>
 
-          <form className={styles.searchBox} onSubmit={(e) => e.preventDefault()}>
-            <svg className={styles.searchIcon} width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <circle cx="11" cy="11" r="8" />
-              <path d="m21 21-4.35-4.35" />
-            </svg>
-            <input
-              type="text"
-              placeholder="Search products, services, jobs..."
-              className={styles.searchInput}
-            />
-            <button className={styles.searchButton} type="submit">Search</button>
-          </form>
+        <div className={styles.mainContent}>
+          <div className={styles.storiesRow}>
+            {stories.map((story) => (
+              <div key={story.id} className={styles.storyCard}>
+                <div className={styles.storyAvatar}>{story.avatar}</div>
+                <span className={styles.storyName}>{story.name}</span>
+              </div>
+            ))}
+          </div>
 
-          <div className={styles.heroTags}>
-            <span className={styles.tag}>Popular: iPhone</span>
-            <span className={styles.tag}>Toyota</span>
-            <span className={styles.tag}>Apartments</span>
-            <span className={styles.tag}>Jobs</span>
+          <div className={styles.createPost}>
+            <div className={styles.createAvatar}>👤</div>
+            <div className={styles.createInputWrapper}>
+              <input
+                type="text"
+                placeholder="What's happening in Balaka?"
+                className={styles.createInput}
+              />
+              <div className={styles.createActions}>
+                <button className={styles.createButton}>Post</button>
+              </div>
+            </div>
+          </div>
+
+          <div className={styles.feed}>
+            {posts.map((post) => (
+              <div key={post.id} className={styles.postCard}>
+                <div className={styles.postHeader}>
+                  <div className={styles.postAvatar}>{post.avatar}</div>
+                  <div className={styles.postMeta}>
+                    <h4 className={styles.postAuthor}>{post.author}</h4>
+                    <span className={styles.postTime}>{post.time}</span>
+                  </div>
+                </div>
+                <p className={styles.postContent}>{post.content}</p>
+                <div className={styles.postActions}>
+                  <button className={styles.postAction}>
+                    <span>❤️</span> {post.likes}
+                  </button>
+                  <button className={styles.postAction}>
+                    <span>💬</span> {post.comments}
+                  </button>
+                  <button className={styles.postAction}>
+                    <span>🔄</span> {post.shares}
+                  </button>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
-      </section>
 
-      <section className={styles.categoriesSection}>
-        <div className={styles.sectionHeader}>
-          <h2 className={styles.sectionTitle}>Browse Categories</h2>
-          <p className={styles.sectionSubtitle}>Find exactly what you need</p>
-        </div>
-        <div className={styles.categoriesGrid}>
-          {categories.map((category) => (
-            <a key={category.id} href="#" className={styles.categoryCard}>
-              <span className={styles.categoryIcon}>{category.icon}</span>
-              <span className={styles.categoryName}>{category.name}</span>
-              <span className={styles.categoryCount}>{category.count} listings</span>
-            </a>
-          ))}
-        </div>
-      </section>
-
-      <section className={styles.featuredSection}>
-        <div className={styles.sectionHeader}>
-          <h2 className={styles.sectionTitle}>Featured Listings</h2>
-          <p className={styles.sectionSubtitle}>Top picks from verified sellers</p>
-        </div>
-        <div className={styles.listingsGrid}>
-          {featuredListings.map((listing) => (
-            <div key={listing.id} className={styles.listingCard}>
-              <div className={styles.listingImage}>
-                <img src={listing.image} alt={listing.title} />
-                <span className={styles.listingBadge}>{listing.category}</span>
-              </div>
-              <div className={styles.listingBody}>
-                <h3 className={styles.listingTitle}>{listing.title}</h3>
-                <p className={styles.listingPrice}>{listing.price}</p>
-                <p className={styles.listingLocation}>📍 {listing.location}</p>
-              </div>
+        <div className={styles.rightSidebar}>
+          <div className={styles.trendingCard}>
+            <h3 className={styles.trendingTitle}>Trending in Balaka</h3>
+            <div className={styles.trendingItem}>
+              <span className={styles.trendingTag}>#Community</span>
+              <span className={styles.trendingCount}>128 posts</span>
             </div>
-          ))}
-        </div>
-      </section>
-
-      <section className={styles.statsSection}>
-        <div className={styles.statsGrid}>
-          {stats.map((stat) => (
-            <div key={stat.label} className={styles.statCard}>
-              <span className={styles.statValue}>{stat.value}</span>
-              <span className={styles.statLabel}>{stat.label}</span>
+            <div className={styles.trendingItem}>
+              <span className={styles.trendingTag}>#LocalBusiness</span>
+              <span className={styles.trendingCount}>84 posts</span>
             </div>
-          ))}
+            <div className={styles.trendingItem}>
+              <span className={styles.trendingTag}>#Events</span>
+              <span className={styles.trendingCount}>56 posts</span>
+            </div>
+          </div>
         </div>
-      </section>
-
-      <section className={styles.ctaSection}>
-        <div className={styles.ctaInner}>
-          <h2 className={styles.ctaTitle}>Ready to start selling?</h2>
-          <p className={styles.ctaText}>List your items in minutes and reach thousands of buyers across Malawi.</p>
-          <button className={styles.ctaButton}>Create Free Listing</button>
-        </div>
-      </section>
+      </div>
     </div>
   );
 }
