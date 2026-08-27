@@ -26,13 +26,48 @@ function Registration() {
 
   return (
     <div className={styles.page}>
-      <div className={styles.card}>
-        <div className={styles.header}>
-          <h1 className={styles.title}>Sign Up</h1>
-          <p className={styles.subtitle}>Join Msika Wa Balaka marketplace</p>
+      <div className={styles.container}>
+        <div className={styles.leftSidebar}>
+          <div className={styles.userCard}>
+            <div className={styles.userAvatar}>👤</div>
+            <div className={styles.userInfo}>
+              <h3 className={styles.userName}>Your Name</h3>
+              <p className={styles.userHandle}>@username</p>
+            </div>
+          </div>
+          <nav className={styles.sidebarNav}>
+            <a href="/" className={`${styles.sidebarLink} ${styles.active}`}>
+              <span>🏠</span> Feed
+            </a>
+            <a href="/explore" className={styles.sidebarLink}>
+              <span>🔍</span> Explore
+            </a>
+            <a href="/news" className={styles.sidebarLink}>
+              <span>📰</span> News
+            </a>
+            <a href="/categories" className={styles.sidebarLink}>
+              <span>🛒</span> Marketplace
+            </a>
+            <a href="/messages" className={styles.sidebarLink}>
+              <span>💬</span> Messages
+            </a>
+            <a href="/notifications" className={styles.sidebarLink}>
+              <span>🔔</span> Notifications
+            </a>
+            <a href="/profile" className={styles.sidebarLink}>
+              <span>👤</span> Profile
+            </a>
+          </nav>
         </div>
 
-        <form className={styles.form} onSubmit={handleSubmit}>
+        <div className={styles.mainContent}>
+          <div className={styles.card}>
+            <div className={styles.header}>
+              <h1 className={styles.title}>Sign Up</h1>
+              <p className={styles.subtitle}>Join Kwathu - Connect with Balaka</p>
+            </div>
+
+            <form className={styles.form} onSubmit={handleSubmit}>
           <div className={styles.field}>
             <label className={styles.label} htmlFor="fullName">Full Name</label>
             <input
@@ -123,6 +158,8 @@ function Registration() {
           </p>
         </form>
       </div>
+    </div>
+    </div>
     </div>
   );
 }

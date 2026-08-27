@@ -113,7 +113,7 @@ const Header = () => {
                   <span className={styles.dropdownIcon}>🔥</span>
                   Trending
                 </button>
-                <button className={styles.navDropdownItem} onClick={() => { navigate('/explore'); setIsExploreOpen(false); }}>
+                <button className={styles.navDropdownItem} onClick={() => { navigate('/news'); setIsExploreOpen(false); }}>
                   <span className={styles.dropdownIcon}>📰</span>
                   News
                 </button>
@@ -121,7 +121,7 @@ const Header = () => {
                   <span className={styles.dropdownIcon}>🎬</span>
                   Entertainment
                 </button>
-                <button className={styles.navDropdownItem} onClick={() => { navigate('/explore'); setIsExploreOpen(false); }}>
+                <button className={styles.navDropdownItem} onClick={() => { navigate('/sports'); setIsExploreOpen(false); }}>
                   <span className={styles.dropdownIcon}>⚽</span>
                   Sports
                 </button>
@@ -254,6 +254,12 @@ const Header = () => {
           </a>
           <a href="/explore" className={`${styles.navLink} ${isActive('/explore')}`} onClick={() => setIsMenuOpen(false)}>
             <span className={styles.linkText}>Explore</span>
+          </a>
+          <a href="/news" className={`${styles.navLink} ${isActive('/news')}`} onClick={() => setIsMenuOpen(false)}>
+            <span className={styles.linkText}>News</span>
+          </a>
+          <a href="/sports" className={`${styles.navLink} ${isActive('/sports')}`} onClick={() => setIsMenuOpen(false)}>
+            <span className={styles.linkText}>Sports</span>
           </a>
           <a href="/categories" className={`${styles.navLink} ${isActive('/categories')}`} onClick={() => setIsMenuOpen(false)}>
             <span className={styles.linkText}>Marketplace</span>

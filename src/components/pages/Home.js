@@ -61,6 +61,15 @@ function Home() {
             <a href="/explore" className={styles.sidebarLink}>
               <span>🔍</span> Explore
             </a>
+            <a href="/news" className={styles.sidebarLink}>
+              <span>📰</span> News
+            </a>
+            <a href="/sports" className={styles.sidebarLink}>
+              <span>⚽</span> Sports
+            </a>
+            <a href="/categories" className={styles.sidebarLink}>
+              <span>🛒</span> Marketplace
+            </a>
             <a href="/messages" className={styles.sidebarLink}>
               <span>💬</span> Messages
             </a>
