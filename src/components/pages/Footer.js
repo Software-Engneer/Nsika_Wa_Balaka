@@ -31,9 +31,9 @@ function Footer() {
             </div>
             <div className={styles.linkGroup}>
               <h4 className={styles.linkTitle}>Legal</h4>
-              <a href="#" className={styles.link}>Terms of Service</a>
-              <a href="#" className={styles.link}>Privacy Policy</a>
-              <a href="#" className={styles.link}>Community Guidelines</a>
+              <button type="button" className={styles.link}>Terms of Service</button>
+              <button type="button" className={styles.link}>Privacy Policy</button>
+              <button type="button" className={styles.link}>Community Guidelines</button>
             </div>
           </div>
         </div>
@@ -41,10 +41,10 @@ function Footer() {
         <div className={styles.bottom}>
           <p className={styles.copy}>© {new Date().getFullYear()} Kwathu. All rights reserved.</p>
           <div className={styles.socials}>
-            <a href="#" className={styles.social} aria-label="Facebook">FB</a>
-            <a href="#" className={styles.social} aria-label="Twitter">TW</a>
-            <a href="#" className={styles.social} aria-label="Instagram">IG</a>
-            <a href="#" className={styles.social} aria-label="WhatsApp">WA</a>
+            <button type="button" className={styles.social} aria-label="Facebook">FB</button>
+            <button type="button" className={styles.social} aria-label="Twitter">TW</button>
+            <button type="button" className={styles.social} aria-label="Instagram">IG</button>
+            <button type="button" className={styles.social} aria-label="WhatsApp">WA</button>
           </div>
         </div>
       </div>

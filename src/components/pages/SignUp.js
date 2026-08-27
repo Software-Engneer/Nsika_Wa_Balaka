@@ -147,7 +147,7 @@ function Registration() {
               required
             />
             <span className={styles.checkboxText}>
-              I agree to the <a href="#" className={styles.link}>Terms of Service</a> and <a href="#" className={styles.link}>Privacy Policy</a>
+              I agree to the <button type="button" className={styles.link}>Terms of Service</button> and <button type="button" className={styles.link}>Privacy Policy</button>
             </span>
           </label>
 
