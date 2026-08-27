@@ -117,7 +117,7 @@ const Header = () => {
                   <span className={styles.dropdownIcon}>📰</span>
                   News
                 </button>
-                <button className={styles.navDropdownItem} onClick={() => { navigate('/explore'); setIsExploreOpen(false); }}>
+                <button className={styles.navDropdownItem} onClick={() => { navigate('/events'); setIsExploreOpen(false); }}>
                   <span className={styles.dropdownIcon}>🎉</span>
                   Events
                 </button>
@@ -260,6 +260,9 @@ const Header = () => {
           </a>
           <a href="/sports" className={`${styles.navLink} ${isActive('/sports')}`} onClick={() => setIsMenuOpen(false)}>
             <span className={styles.linkText}>Sports</span>
+          </a>
+          <a href="/events" className={`${styles.navLink} ${isActive('/events')}`} onClick={() => setIsMenuOpen(false)}>
+            <span className={styles.linkText}>Events</span>
           </a>
           <a href="/categories" className={`${styles.navLink} ${isActive('/categories')}`} onClick={() => setIsMenuOpen(false)}>
             <span className={styles.linkText}>Marketplace</span>
