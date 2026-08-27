@@ -67,6 +67,9 @@ function Home() {
             <a href="/sports" className={styles.sidebarLink}>
               <span>⚽</span> Sports
             </a>
+            <a href="/events" className={styles.sidebarLink}>
+              <span>🎉</span> Events
+            </a>
             <a href="/categories" className={styles.sidebarLink}>
               <span>🛒</span> Marketplace
             </a>

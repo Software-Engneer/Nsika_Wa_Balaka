@@ -108,50 +108,91 @@
   margin: 0;
 }
 
-.section {
-  margin-bottom: 2.5rem;
+.tabs {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid #e2e8f0;
+  padding-bottom: 0.5rem;
 }
 
-.sectionTitle {
-  font-size: 1.25rem;
-  font-weight: 700;
-  color: #0f172a;
-  margin: 0 0 1rem;
+.tab {
+  padding: 0.6rem 1.25rem;
+  border-radius: 8px;
+  border: none;
+  background: transparent;
+  color: #475569;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
 }
 
-.liveCard {
+.tab:hover {
+  background: #f1f5f9;
+  color: #0ea5e9;
+}
+
+.activeTab {
+  background: #0ea5e9;
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(14, 165, 233, 0.25);
+}
+
+.activeTab:hover {
+  background: #0ea5e9;
+  color: #ffffff;
+}
+
+.tabContent {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.empty {
+  text-align: center;
+  color: #94a3b8;
+  font-size: 0.95rem;
+  padding: 2rem;
+}
+
+.fixtureCard,
+.resultCard,
+.newsCard {
   background: #ffffff;
   border-radius: 16px;
   border: 1px solid #e2e8f0;
-  padding: 1.5rem;
+  padding: 1.25rem;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
-  margin-bottom: 1rem;
+  transition: all 0.2s ease;
 }
 
-.liveHeader {
+.fixtureCard:hover,
+.resultCard:hover,
+.newsCard:hover {
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+  transform: translateY(-2px);
+}
+
+.fixtureHeader,
+.resultHeader {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 1rem;
+  margin-bottom: 0.75rem;
 }
 
-.liveBadge {
-  background: #dc2626;
-  color: #ffffff;
-  padding: 0.25rem 0.75rem;
-  border-radius: 999px;
-  font-size: 0.75rem;
-  font-weight: 700;
-  letter-spacing: 0.5px;
-  animation: pulse 1.5s ease-in-out infinite;
+.fixtureDate,
+.resultCompetition {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #0ea5e9;
 }
 
-@keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.6; }
-}
-
-.liveTime {
+.fixtureTime,
+.resultDate {
   font-size: 0.85rem;
   color: #94a3b8;
   font-weight: 500;
@@ -163,12 +204,6 @@
   justify-content: space-between;
   gap: 1rem;
   margin-bottom: 0.75rem;
-}
-
-.team {
-  flex: 1;
-  display: flex;
-  justify-content: center;
 }
 
 .teamName {
@@ -211,51 +246,6 @@
   margin: 0;
 }
 
-.fixturesList,
-.resultsList {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.fixtureCard,
-.resultCard {
-  background: #ffffff;
-  border-radius: 16px;
-  border: 1px solid #e2e8f0;
-  padding: 1.25rem;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
-  transition: all 0.2s ease;
-}
-
-.fixtureCard:hover,
-.resultCard:hover {
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
-  transform: translateY(-2px);
-}
-
-.fixtureHeader,
-.resultHeader {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 0.75rem;
-}
-
-.fixtureDate,
-.resultCompetition {
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: #0ea5e9;
-}
-
-.fixtureTime,
-.resultDate {
-  font-size: 0.85rem;
-  color: #94a3b8;
-  font-weight: 500;
-}
-
 .win .score {
   color: #16a34a;
 }
@@ -266,6 +256,41 @@
 
 .draw .score {
   color: #64748b;
+}
+
+.newsTitle {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0 0 0.6rem;
+  line-height: 1.4;
+}
+
+.newsExcerpt {
+  font-size: 0.95rem;
+  color: #475569;
+  line-height: 1.6;
+  margin: 0 0 1rem;
+}
+
+.newsFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 0.75rem;
+  border-top: 1px solid #f1f5f9;
+}
+
+.author {
+  font-size: 0.85rem;
+  color: #94a3b8;
+  font-weight: 500;
+}
+
+.time {
+  font-size: 0.85rem;
+  color: #94a3b8;
+  font-weight: 500;
 }
 
 @media (max-width: 768px) {
@@ -287,9 +312,9 @@
     font-size: 1.5rem;
   }
 
-  .liveCard,
   .fixtureCard,
-  .resultCard {
+  .resultCard,
+  .newsCard {
     padding: 1rem;
   }
 
@@ -299,5 +324,14 @@
 
   .score {
     font-size: 1.2rem;
+  }
+
+  .tabs {
+    gap: 0.35rem;
+  }
+
+  .tab {
+    padding: 0.5rem 0.9rem;
+    font-size: 0.8rem;
   }
 }

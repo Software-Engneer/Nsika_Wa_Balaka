@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styles from '../styles/Sports.module.css';
 
 const fixtures = [
@@ -66,7 +66,33 @@ const results = [
   },
 ];
 
+const sportsNews = [
+  {
+    id: 1,
+    title: 'Balaka United FC Signs New Striker Ahead of Super League Run-in',
+    excerpt: 'Balaka United FC has completed the signing of a new forward to boost their attacking options for the remainder of the season.',
+    time: '3 hours ago',
+    author: 'Kwathu Sports',
+  },
+  {
+    id: 2,
+    title: 'Balaka Stadium Renovation Nears Completion',
+    excerpt: 'The long-awaited renovation of Balaka Stadium is almost complete, with new seating and improved lighting expected to be finished by next month.',
+    time: '1 day ago',
+    author: 'Kwathu News',
+  },
+  {
+    id: 3,
+    title: 'Youth Football Tournament Kicks Off in Balaka',
+    excerpt: 'Local youth teams are competing in a week-long football tournament aimed at developing young talent in the district.',
+    time: '2 days ago',
+    author: 'Kwathu Sports',
+  },
+];
+
 function Sports() {
+  const [activeTab, setActiveTab] = useState('fixtures');
+
   return (
     <div className={styles.page}>
       <div className={styles.container}>
@@ -112,40 +138,33 @@ function Sports() {
             <p className={styles.subtitle}>Football fixtures, results, and updates from around Balaka</p>
           </div>
 
-          <div className={styles.section}>
-            <h2 className={styles.sectionTitle}>Live Match</h2>
-            {fixtures
-              .filter((match) => match.status === 'live')
-              .map((match) => (
-                <div key={match.id} className={styles.liveCard}>
-                  <div className={styles.liveHeader}>
-                    <span className={styles.liveBadge}>LIVE</span>
-                    <span className={styles.liveTime}>{match.time}</span>
-                  </div>
-                  <div className={styles.matchRow}>
-                    <div className={styles.team}>
-                      <span className={styles.teamName}>{match.homeTeam}</span>
-                    </div>
-                    <div className={styles.scoreBoard}>
-                      <span className={styles.score}>{match.homeScore}</span>
-                      <span className={styles.scoreDivider}>-</span>
-                      <span className={styles.score}>{match.awayScore}</span>
-                    </div>
-                    <div className={styles.team}>
-                      <span className={styles.teamName}>{match.awayTeam}</span>
-                    </div>
-                  </div>
-                  <p className={styles.matchVenue}>{match.venue}</p>
-                </div>
-              ))}
+          <div className={styles.tabs}>
+            <button
+              className={`${styles.tab} ${activeTab === 'fixtures' ? styles.activeTab : ''}`}
+              onClick={() => setActiveTab('fixtures')}
+            >
+              Upcoming Fixtures
+            </button>
+            <button
+              className={`${styles.tab} ${activeTab === 'results' ? styles.activeTab : ''}`}
+              onClick={() => setActiveTab('results')}
+            >
+              Results
+            </button>
+            <button
+              className={`${styles.tab} ${activeTab === 'news' ? styles.activeTab : ''}`}
+              onClick={() => setActiveTab('news')}
+            >
+              News
+            </button>
           </div>
 
-          <div className={styles.section}>
-            <h2 className={styles.sectionTitle}>Upcoming Fixtures</h2>
-            <div className={styles.fixturesList}>
-              {fixtures
-                .filter((match) => match.status === 'upcoming')
-                .map((match) => (
+          {activeTab === 'fixtures' && (
+            <div className={styles.tabContent}>
+              {fixtures.length === 0 ? (
+                <p className={styles.empty}>No upcoming fixtures available.</p>
+              ) : (
+                fixtures.map((match) => (
                   <div key={match.id} className={styles.fixtureCard}>
                     <div className={styles.fixtureHeader}>
                       <span className={styles.fixtureDate}>{match.date}</span>
@@ -158,33 +177,56 @@ function Sports() {
                     </div>
                     <p className={styles.matchVenue}>{match.venue}</p>
                   </div>
-                ))}
+                ))
+              )}
             </div>
-          </div>
+          )}
 
-          <div className={styles.section}>
-            <h2 className={styles.sectionTitle}>Recent Results</h2>
-            <div className={styles.resultsList}>
-              {results.map((result) => (
-                <div key={result.id} className={styles.resultCard}>
-                  <div className={styles.resultHeader}>
-                    <span className={styles.resultCompetition}>{result.competition}</span>
-                    <span className={styles.resultDate}>{result.date}</span>
-                  </div>
-                  <div className={`${styles.matchRow} ${result.homeScore > result.awayScore ? styles.win : result.homeScore < result.awayScore ? styles.loss : styles.draw}`}>
-                    <span className={styles.teamName}>{result.homeTeam}</span>
-                    <div className={styles.scoreBoard}>
-                      <span className={styles.score}>{result.homeScore}</span>
-                      <span className={styles.scoreDivider}>-</span>
-                      <span className={styles.score}>{result.awayScore}</span>
+          {activeTab === 'results' && (
+            <div className={styles.tabContent}>
+              {results.length === 0 ? (
+                <p className={styles.empty}>No recent results available.</p>
+              ) : (
+                results.map((result) => (
+                  <div key={result.id} className={styles.resultCard}>
+                    <div className={styles.resultHeader}>
+                      <span className={styles.resultCompetition}>{result.competition}</span>
+                      <span className={styles.resultDate}>{result.date}</span>
                     </div>
-                    <span className={styles.teamName}>{result.awayTeam}</span>
+                    <div className={`${styles.matchRow} ${result.homeScore > result.awayScore ? styles.win : result.homeScore < result.awayScore ? styles.loss : styles.draw}`}>
+                      <span className={styles.teamName}>{result.homeTeam}</span>
+                      <div className={styles.scoreBoard}>
+                        <span className={styles.score}>{result.homeScore}</span>
+                        <span className={styles.scoreDivider}>-</span>
+                        <span className={styles.score}>{result.awayScore}</span>
+                      </div>
+                      <span className={styles.teamName}>{result.awayTeam}</span>
+                    </div>
+                    <p className={styles.matchVenue}>{result.venue}</p>
                   </div>
-                  <p className={styles.matchVenue}>{result.venue}</p>
-                </div>
-              ))}
+                ))
+              )}
             </div>
-          </div>
+          )}
+
+          {activeTab === 'news' && (
+            <div className={styles.tabContent}>
+              {sportsNews.length === 0 ? (
+                <p className={styles.empty}>No sports news available.</p>
+              ) : (
+                sportsNews.map((item) => (
+                  <div key={item.id} className={styles.newsCard}>
+                    <h3 className={styles.newsTitle}>{item.title}</h3>
+                    <p className={styles.newsExcerpt}>{item.excerpt}</p>
+                    <div className={styles.newsFooter}>
+                      <span className={styles.author}>{item.author}</span>
+                      <span className={styles.time}>{item.time}</span>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+          )}
         </div>
       </div>
     </div>

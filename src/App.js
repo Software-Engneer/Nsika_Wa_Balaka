@@ -6,6 +6,7 @@ import Home from './components/pages/Home';
 import Categories from './components/pages/Categories';
 import News from './components/pages/News';
 import Sports from './components/pages/Sports';
+import Events from './components/pages/Events';
 import SignUp from './components/pages/SignUp';
 import SignIn from './components/pages/SignIn';
 import SignOut from './components/pages/SignOut';
@@ -20,6 +21,7 @@ function App() {
             <Route path="/explore" element={<Home />} />
             <Route path="/news" element={<News />} />
             <Route path="/sports" element={<Sports />} />
+            <Route path="/events" element={<Events />} />
             <Route path="/categories" element={<Categories />} />
             <Route path="/messages" element={<Home />} />
             <Route path="/notifications" element={<Home />} />

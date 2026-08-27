@@ -118,8 +118,8 @@ const Header = () => {
                   News
                 </button>
                 <button className={styles.navDropdownItem} onClick={() => { navigate('/explore'); setIsExploreOpen(false); }}>
-                  <span className={styles.dropdownIcon}>🎬</span>
-                  Entertainment
+                  <span className={styles.dropdownIcon}>🎉</span>
+                  Events
                 </button>
                 <button className={styles.navDropdownItem} onClick={() => { navigate('/sports'); setIsExploreOpen(false); }}>
                   <span className={styles.dropdownIcon}>⚽</span>
