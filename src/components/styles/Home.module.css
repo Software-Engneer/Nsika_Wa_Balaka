@@ -171,6 +171,12 @@
   background: transparent;
   outline: none;
   font-family: inherit;
+  resize: vertical;
+  min-height: 44px;
+}
+
+.createInput textarea {
+  width: 100%;
 }
 
 .createInput::placeholder {

@@ -114,6 +114,7 @@
   margin-bottom: 1.5rem;
   border-bottom: 1px solid #e2e8f0;
   padding-bottom: 0.5rem;
+  flex-wrap: wrap;
 }
 
 .tab {
@@ -149,6 +150,12 @@
   display: flex;
   flex-direction: column;
   gap: 1rem;
+  animation: fadeIn 0.25s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .empty {
@@ -156,6 +163,267 @@
   color: #94a3b8;
   font-size: 0.95rem;
   padding: 2rem;
+}
+
+.searchBar {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 0.75rem 1rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  margin-bottom: 0.5rem;
+}
+
+.searchIcon {
+  font-size: 1rem;
+  color: #94a3b8;
+}
+
+.searchInput {
+  flex: 1;
+  border: none;
+  background: transparent;
+  outline: none;
+  font-size: 0.95rem;
+  color: #0f172a;
+  font-family: inherit;
+}
+
+.searchInput::placeholder {
+  color: #94a3b8;
+}
+
+.clearSearch {
+  background: none;
+  border: none;
+  color: #94a3b8;
+  cursor: pointer;
+  font-size: 0.9rem;
+  padding: 0.25rem;
+  border-radius: 50%;
+  transition: all 0.15s ease;
+}
+
+.clearSearch:hover {
+  background: #f1f5f9;
+  color: #475569;
+}
+
+.liveBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: #dc2626;
+  color: #ffffff;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.25rem 0.6rem;
+  border-radius: 999px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.liveDot {
+  width: 8px;
+  height: 8px;
+  background: #ffffff;
+  border-radius: 50%;
+  animation: pulse 1.2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.85); }
+}
+
+.liveCard {
+  border-color: #fca5a5;
+  background: linear-gradient(180deg, #fef2f2 0%, #ffffff 100%);
+}
+
+.liveScoreBoard {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.liveScore {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #dc2626;
+  min-width: 2rem;
+  text-align: center;
+  animation: scorePop 0.4s ease;
+}
+
+@keyframes scorePop {
+  0% { transform: scale(1.6); opacity: 0.6; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.venueIcon {
+  font-size: 0.8rem;
+  margin-right: 0.25rem;
+}
+
+.teamBlock {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  justify-content: flex-end;
+}
+
+.teamBlock .teamName {
+  text-align: right;
+}
+
+.teamBlock:first-child {
+  justify-content: flex-start;
+}
+
+.teamBlock:first-child .teamName {
+  text-align: left;
+}
+
+.favoriteStar {
+  font-size: 0.85rem;
+}
+
+.tableWrapper {
+  overflow-x: auto;
+  background: #ffffff;
+  border-radius: 16px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.standingsTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+}
+
+.standingsTable thead {
+  background: #f8fafc;
+}
+
+.standingsTable th {
+  padding: 0.9rem 0.75rem;
+  text-align: left;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-bottom: 1px solid #e2e8f0;
+  white-space: nowrap;
+}
+
+.standingRow {
+  cursor: pointer;
+  transition: all 0.15s ease;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.standingRow:hover {
+  background: #f8fafc;
+}
+
+.standingRow td {
+  padding: 0.85rem 0.75rem;
+  vertical-align: middle;
+}
+
+.posCol {
+  width: 40px;
+  text-align: center;
+  font-weight: 700;
+  color: #94a3b8;
+}
+
+.teamCol {
+  min-width: 180px;
+}
+
+.teamNameCell {
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.statCol {
+  text-align: center;
+  font-weight: 600;
+  color: #475569;
+}
+
+.pointsCell {
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.championsLeague {
+  background: rgba(14, 165, 233, 0.06);
+}
+
+.championsLeague .posCol {
+  color: #0ea5e9;
+}
+
+.confederationCup {
+  background: rgba(245, 158, 11, 0.06);
+}
+
+.confederationCup .posCol {
+  color: #f59e0b;
+}
+
+.relegation {
+  background: rgba(220, 38, 38, 0.06);
+}
+
+.relegation .posCol {
+  color: #dc2626;
+}
+
+.favoriteRow {
+  background: rgba(14, 165, 233, 0.12) !important;
+}
+
+.tableHint {
+  text-align: center;
+  color: #94a3b8;
+  font-size: 0.85rem;
+  margin-top: 1rem;
+}
+
+.win {
+  background: rgba(22, 163, 74, 0.08);
+  border: 1px solid rgba(22, 163, 74, 0.2);
+}
+
+.win .score {
+  color: #16a34a;
+}
+
+.loss {
+  background: rgba(220, 38, 38, 0.08);
+  border: 1px solid rgba(220, 38, 38, 0.2);
+}
+
+.loss .score {
+  color: #dc2626;
+}
+
+.draw {
+  background: #f8fafc;
+  border: 1px solid #f1f5f9;
+}
+
+.draw .score {
+  color: #64748b;
 }
 
 .fixtureCard,
@@ -244,18 +512,10 @@
   color: #64748b;
   text-align: center;
   margin: 0;
-}
-
-.win .score {
-  color: #16a34a;
-}
-
-.loss .score {
-  color: #dc2626;
-}
-
-.draw .score {
-  color: #64748b;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
 }
 
 .newsTitle {
@@ -301,6 +561,15 @@
   .leftSidebar {
     display: none;
   }
+
+  .tabs {
+    gap: 0.35rem;
+  }
+
+  .tab {
+    padding: 0.5rem 0.9rem;
+    font-size: 0.8rem;
+  }
 }
 
 @media (max-width: 600px) {
@@ -326,12 +595,16 @@
     font-size: 1.2rem;
   }
 
-  .tabs {
-    gap: 0.35rem;
+  .standingsTable {
+    font-size: 0.8rem;
   }
 
-  .tab {
-    padding: 0.5rem 0.9rem;
-    font-size: 0.8rem;
+  .standingsTable th,
+  .standingRow td {
+    padding: 0.6rem 0.4rem;
+  }
+
+  .teamCol {
+    min-width: 120px;
   }
 }

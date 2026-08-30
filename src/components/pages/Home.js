@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import styles from '../styles/Home.module.css';
 
-const posts = [
+const defaultPosts = [
   {
     id: 1,
     author: 'Chifundo Banda',
@@ -43,6 +43,58 @@ const stories = [
 ];
 
 function Home() {
+  const [posts, setPosts] = useState(() => {
+    const saved = localStorage.getItem('kwathu_posts');
+    return saved ? JSON.parse(saved) : defaultPosts;
+  });
+  const [postContent, setPostContent] = useState('');
+  const [likedPosts, setLikedPosts] = useState(() => {
+    const saved = localStorage.getItem('kwathu_liked');
+    return saved ? JSON.parse(saved) : [];
+  });
+  const nextId = useRef(
+    posts.reduce((max, post) => Math.max(max, post.id), 0) + 1
+  );
+
+  useEffect(() => {
+    localStorage.setItem('kwathu_posts', JSON.stringify(posts));
+  }, [posts]);
+
+  useEffect(() => {
+    localStorage.setItem('kwathu_liked', JSON.stringify(likedPosts));
+  }, [likedPosts]);
+
+  const handlePost = () => {
+    const text = postContent.trim();
+    if (!text) return;
+    const newPost = {
+      id: nextId.current,
+      author: 'Your Name',
+      avatar: '👤',
+      time: 'Just now',
+      content: text,
+      likes: 0,
+      comments: 0,
+      shares: 0,
+    };
+    nextId.current += 1;
+    setPosts([newPost, ...posts]);
+    setPostContent('');
+  };
+
+  const handleLike = (id) => {
+    setPosts((prev) =>
+      prev.map((p) =>
+        p.id === id
+          ? { ...p, likes: likedPosts.includes(id) ? p.likes - 1 : p.likes + 1 }
+          : p
+      )
+    );
+    setLikedPosts((prev) =>
+      prev.includes(id) ? prev.filter((l) => l !== id) : [...prev, id]
+    );
+  };
+
   return (
     <div className={styles.page}>
       <div className={styles.container}>
@@ -98,13 +150,15 @@ function Home() {
           <div className={styles.createPost}>
             <div className={styles.createAvatar}>👤</div>
             <div className={styles.createInputWrapper}>
-              <input
-                type="text"
+              <textarea
+                value={postContent}
+                onChange={(e) => setPostContent(e.target.value)}
                 placeholder="What's happening in Balaka?"
                 className={styles.createInput}
+                rows={3}
               />
               <div className={styles.createActions}>
-                <button className={styles.createButton}>Post</button>
+                <button className={styles.createButton} onClick={handlePost}>Post</button>
               </div>
             </div>
           </div>
@@ -121,7 +175,7 @@ function Home() {
                 </div>
                 <p className={styles.postContent}>{post.content}</p>
                 <div className={styles.postActions}>
-                  <button className={styles.postAction}>
+                  <button className={styles.postAction} onClick={() => handleLike(post.id)}>
                     <span>❤️</span> {post.likes}
                   </button>
                   <button className={styles.postAction}>
