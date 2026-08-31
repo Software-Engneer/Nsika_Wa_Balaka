@@ -1,7 +1,11 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext';
 import styles from '../styles/SignUp.module.css';
 
 function Registration() {
+  const { signUp } = useAuth();
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     fullName: '',
     email: '',
@@ -10,6 +14,8 @@ function Registration() {
     confirmPassword: '',
     agreeTerms: false,
   });
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -17,11 +23,40 @@ function Registration() {
       ...prev,
       [name]: type === 'checkbox' ? checked : value,
     }));
+    setError('');
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log('Sign up submitted:', formData);
+    setError('');
+
+    if (formData.password !== formData.confirmPassword) {
+      setError('Passwords do not match.');
+      return;
+    }
+
+    if (formData.password.length < 6) {
+      setError('Password must be at least 6 characters.');
+      return;
+    }
+
+    setLoading(true);
+
+    setTimeout(() => {
+      const result = signUp({
+        fullName: formData.fullName,
+        email: formData.email,
+        phone: formData.phone,
+        password: formData.password,
+      });
+
+      if (result.success) {
+        navigate('/');
+      } else {
+        setError(result.error);
+        setLoading(false);
+      }
+    }, 400);
   };
 
   return (
@@ -67,99 +102,103 @@ function Registration() {
               <p className={styles.subtitle}>Join Kwathu - Connect with Balaka</p>
             </div>
 
+            {error && <div className={styles.errorMessage}>{error}</div>}
+
             <form className={styles.form} onSubmit={handleSubmit}>
-          <div className={styles.field}>
-            <label className={styles.label} htmlFor="fullName">Full Name</label>
-            <input
-              id="fullName"
-              name="fullName"
-              type="text"
-              className={styles.input}
-              placeholder="Enter your full name"
-              value={formData.fullName}
-              onChange={handleChange}
-              required
-            />
+              <div className={styles.field}>
+                <label className={styles.label} htmlFor="fullName">Full Name</label>
+                <input
+                  id="fullName"
+                  name="fullName"
+                  type="text"
+                  className={styles.input}
+                  placeholder="Enter your full name"
+                  value={formData.fullName}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+
+              <div className={styles.field}>
+                <label className={styles.label} htmlFor="email">Email</label>
+                <input
+                  id="email"
+                  name="email"
+                  type="email"
+                  className={styles.input}
+                  placeholder="you@example.com"
+                  value={formData.email}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+
+              <div className={styles.field}>
+                <label className={styles.label} htmlFor="phone">Phone Number</label>
+                <input
+                  id="phone"
+                  name="phone"
+                  type="tel"
+                  className={styles.input}
+                  placeholder="+265 999 123 456"
+                  value={formData.phone}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+
+              <div className={styles.field}>
+                <label className={styles.label} htmlFor="password">Password</label>
+                <input
+                  id="password"
+                  name="password"
+                  type="password"
+                  className={styles.input}
+                  placeholder="Create a password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+
+              <div className={styles.field}>
+                <label className={styles.label} htmlFor="confirmPassword">Confirm Password</label>
+                <input
+                  id="confirmPassword"
+                  name="confirmPassword"
+                  type="password"
+                  className={styles.input}
+                  placeholder="Repeat your password"
+                  value={formData.confirmPassword}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+
+              <label className={styles.checkboxWrapper}>
+                <input
+                  type="checkbox"
+                  name="agreeTerms"
+                  checked={formData.agreeTerms}
+                  onChange={handleChange}
+                  required
+                />
+                <span className={styles.checkboxText}>
+                  I agree to the <button type="button" className={styles.link}>Terms of Service</button> and <button type="button" className={styles.link}>Privacy Policy</button>
+                </span>
+              </label>
+
+              <button type="submit" className={styles.submitButton} disabled={loading}>
+                {loading ? 'Creating account...' : 'Sign Up'}
+              </button>
+
+              <p className={styles.footerText}>
+                Already have an account? <a href="/login" className={styles.link}>Sign in</a>
+              </p>
+            </form>
           </div>
-
-          <div className={styles.field}>
-            <label className={styles.label} htmlFor="email">Email</label>
-            <input
-              id="email"
-              name="email"
-              type="email"
-              className={styles.input}
-              placeholder="you@example.com"
-              value={formData.email}
-              onChange={handleChange}
-              required
-            />
-          </div>
-
-          <div className={styles.field}>
-            <label className={styles.label} htmlFor="phone">Phone Number</label>
-            <input
-              id="phone"
-              name="phone"
-              type="tel"
-              className={styles.input}
-              placeholder="+265 999 123 456"
-              value={formData.phone}
-              onChange={handleChange}
-              required
-            />
-          </div>
-
-          <div className={styles.field}>
-            <label className={styles.label} htmlFor="password">Password</label>
-            <input
-              id="password"
-              name="password"
-              type="password"
-              className={styles.input}
-              placeholder="Create a password"
-              value={formData.password}
-              onChange={handleChange}
-              required
-            />
-          </div>
-
-          <div className={styles.field}>
-            <label className={styles.label} htmlFor="confirmPassword">Confirm Password</label>
-            <input
-              id="confirmPassword"
-              name="confirmPassword"
-              type="password"
-              className={styles.input}
-              placeholder="Repeat your password"
-              value={formData.confirmPassword}
-              onChange={handleChange}
-              required
-            />
-          </div>
-
-          <label className={styles.checkboxWrapper}>
-            <input
-              type="checkbox"
-              name="agreeTerms"
-              checked={formData.agreeTerms}
-              onChange={handleChange}
-              required
-            />
-            <span className={styles.checkboxText}>
-              I agree to the <button type="button" className={styles.link}>Terms of Service</button> and <button type="button" className={styles.link}>Privacy Policy</button>
-            </span>
-          </label>
-
-          <button type="submit" className={styles.submitButton}>Sign Up</button>
-
-          <p className={styles.footerText}>
-            Already have an account? <a href="/login" className={styles.link}>Sign in</a>
-          </p>
-        </form>
+        </div>
       </div>
-    </div>
-    </div>
     </div>
   );
 }

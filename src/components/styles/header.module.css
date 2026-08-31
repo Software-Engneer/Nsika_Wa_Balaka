@@ -296,6 +296,46 @@
   color: #dc2626;
 }
 
+.accountUserInfo {
+  padding: 0.6rem 0.75rem;
+  border-bottom: 1px solid #f1f5f9;
+  margin-bottom: 0.25rem;
+}
+
+.accountUserName {
+  display: block;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.accountUserEmail {
+  display: block;
+  font-size: 0.8rem;
+  color: #64748b;
+  margin-top: 0.15rem;
+}
+
+.mobileUserInfo {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid #f1f5f9;
+  margin-bottom: 0.5rem;
+}
+
+.mobileUserName {
+  display: block;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.mobileUserEmail {
+  display: block;
+  font-size: 0.85rem;
+  color: #64748b;
+  margin-top: 0.15rem;
+}
+
 .navDropdown {
   position: relative;
   height: 100%;

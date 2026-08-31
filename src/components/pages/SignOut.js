@@ -1,16 +1,19 @@
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext';
 import styles from '../styles/SignOut.module.css';
 
 function SignOut() {
+  const { signOut, user } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
+    signOut();
     const timer = setTimeout(() => {
       navigate('/');
     }, 1500);
     return () => clearTimeout(timer);
-  }, [navigate]);
+  }, [signOut, navigate]);
 
   return (
     <div className={styles.page}>
@@ -19,8 +22,8 @@ function SignOut() {
           <div className={styles.userCard}>
             <div className={styles.userAvatar}>👤</div>
             <div className={styles.userInfo}>
-              <h3 className={styles.userName}>Your Name</h3>
-              <p className={styles.userHandle}>@username</p>
+              <h3 className={styles.userName}>{user?.fullName || 'Your Name'}</h3>
+              <p className={styles.userHandle}>{user?.email || '@username'}</p>
             </div>
           </div>
           <nav className={styles.sidebarNav}>
@@ -56,8 +59,8 @@ function SignOut() {
             <div className={styles.loader}></div>
           </div>
         </div>
-        </div>
       </div>
+    </div>
   );
 }
 

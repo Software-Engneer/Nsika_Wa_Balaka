@@ -1,12 +1,18 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext';
 import styles from '../styles/SignIn.module.css';
 
 function SignIn() {
+  const { signIn } = useAuth();
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     identifier: '',
     password: '',
     rememberMe: false,
   });
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -14,11 +20,27 @@ function SignIn() {
       ...prev,
       [name]: type === 'checkbox' ? checked : value,
     }));
+    setError('');
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log('Sign in submitted:', formData);
+    setLoading(true);
+    setError('');
+
+    setTimeout(() => {
+      const result = signIn({
+        identifier: formData.identifier,
+        password: formData.password,
+      });
+
+      if (result.success) {
+        navigate('/');
+      } else {
+        setError(result.error);
+        setLoading(false);
+      }
+    }, 400);
   };
 
   return (
@@ -64,54 +86,58 @@ function SignIn() {
               <p className={styles.subtitle}>Sign in to your Kwathu account</p>
             </div>
 
+            {error && <div className={styles.errorMessage}>{error}</div>}
+
             <form className={styles.form} onSubmit={handleSubmit}>
-          <div className={styles.field}>
-            <label className={styles.label} htmlFor="identifier">Email or Phone</label>
-            <input
-              id="identifier"
-              name="identifier"
-              type="text"
-              className={styles.input}
-              placeholder="you@example.com or +265 999 123 456"
-              value={formData.identifier}
-              onChange={handleChange}
-              required
-            />
+              <div className={styles.field}>
+                <label className={styles.label} htmlFor="identifier">Email or Phone</label>
+                <input
+                  id="identifier"
+                  name="identifier"
+                  type="text"
+                  className={styles.input}
+                  placeholder="you@example.com or +265 999 123 456"
+                  value={formData.identifier}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+
+              <div className={styles.field}>
+                <label className={styles.label} htmlFor="password">Password</label>
+                <input
+                  id="password"
+                  name="password"
+                  type="password"
+                  className={styles.input}
+                  placeholder="Enter your password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+
+              <label className={styles.checkboxWrapper}>
+                <input
+                  type="checkbox"
+                  name="rememberMe"
+                  checked={formData.rememberMe}
+                  onChange={handleChange}
+                />
+                <span className={styles.checkboxText}>Remember me</span>
+              </label>
+
+              <button type="submit" className={styles.submitButton} disabled={loading}>
+                {loading ? 'Signing in...' : 'Sign In'}
+              </button>
+
+              <p className={styles.footerText}>
+                Don't have an account? <a href="/register" className={styles.link}>Create account</a>
+              </p>
+            </form>
           </div>
-
-          <div className={styles.field}>
-            <label className={styles.label} htmlFor="password">Password</label>
-            <input
-              id="password"
-              name="password"
-              type="password"
-              className={styles.input}
-              placeholder="Enter your password"
-              value={formData.password}
-              onChange={handleChange}
-              required
-            />
-          </div>
-
-          <label className={styles.checkboxWrapper}>
-            <input
-              type="checkbox"
-              name="rememberMe"
-              checked={formData.rememberMe}
-              onChange={handleChange}
-            />
-            <span className={styles.checkboxText}>Remember me</span>
-          </label>
-
-          <button type="submit" className={styles.submitButton}>Sign In</button>
-
-          <p className={styles.footerText}>
-            Don't have an account? <a href="/register" className={styles.link}>Create account</a>
-          </p>
-        </form>
+        </div>
       </div>
-    </div>
-    </div>
     </div>
   );
 }

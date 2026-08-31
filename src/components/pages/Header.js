@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
 import styles from "../styles/header.module.css";
 import Contact from "./Contact";
 import Modal from "../Modal";
@@ -7,6 +8,7 @@ import Modal from "../Modal";
 const Header = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const { user, signOut } = useAuth();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [showContact, setShowContact] = useState(false);
@@ -71,6 +73,12 @@ const Header = () => {
     if (searchQuery.trim()) {
       console.log("Searching for:", searchQuery);
     }
+  };
+
+  const handleSignOut = () => {
+    signOut();
+    setIsAccountOpen(false);
+    navigate('/');
   };
 
   return (
@@ -171,7 +179,7 @@ const Header = () => {
         </form>
 
         <div className={styles.headerActions}>
-          <button className={styles.iconButton} aria-label="Notifications">
+          <button className={styles.iconButton} aria-label="Notifications" onClick={() => navigate('/notifications')}>
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9" />
               <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0" />
@@ -194,11 +202,22 @@ const Header = () => {
 
             {isAccountOpen && (
               <div className={styles.accountDropdown}>
-                <a href="/profile" className={styles.accountLink}>Profile</a>
-                <a href="/settings" className={styles.accountLink}>Settings</a>
-                <a href="/login" className={styles.accountLink}>Sign In</a>
-                <a href="/register" className={styles.accountLink}>Sign Up</a>
-                <button className={styles.accountSignOut} onClick={() => navigate('/logout')}>Sign Out</button>
+                {user ? (
+                  <>
+                    <div className={styles.accountUserInfo}>
+                      <span className={styles.accountUserName}>{user.fullName}</span>
+                      <span className={styles.accountUserEmail}>{user.email}</span>
+                    </div>
+                    <a href="/profile" className={styles.accountLink}>Profile</a>
+                    <a href="/settings" className={styles.accountLink}>Settings</a>
+                    <button className={styles.accountSignOut} onClick={handleSignOut}>Sign Out</button>
+                  </>
+                ) : (
+                  <>
+                    <a href="/login" className={styles.accountLink}>Sign In</a>
+                    <a href="/register" className={styles.accountLink}>Sign Up</a>
+                  </>
+                )}
               </div>
             )}
           </div>
@@ -245,6 +264,12 @@ const Header = () => {
         </form>
 
         <div className={styles.mobileNavList}>
+          {user && (
+            <div className={styles.mobileUserInfo}>
+              <span className={styles.mobileUserName}>{user.fullName}</span>
+              <span className={styles.mobileUserEmail}>{user.email}</span>
+            </div>
+          )}
           <a href="/" className={`${styles.navLink} ${isActive('/')}`} onClick={() => setIsMenuOpen(false)}>
             <span className={styles.linkText}>Feed</span>
           </a>
@@ -273,9 +298,14 @@ const Header = () => {
             <span className={styles.linkText}>Profile</span>
           </a>
           <div className={styles.mobileAccount}>
-            <a href="/login" className={styles.mobileAccountLink} onClick={() => setIsMenuOpen(false)}>Sign In</a>
-            <a href="/register" className={styles.mobileAccountLink} onClick={() => setIsMenuOpen(false)}>Sign Up</a>
-            <button className={styles.mobileSignOut} onClick={() => { navigate('/logout'); setIsMenuOpen(false); }}>Sign Out</button>
+            {user ? (
+              <button className={styles.mobileSignOut} onClick={() => { handleSignOut(); setIsMenuOpen(false); }}>Sign Out</button>
+            ) : (
+              <>
+                <a href="/login" className={styles.mobileAccountLink} onClick={() => setIsMenuOpen(false)}>Sign In</a>
+                <a href="/register" className={styles.mobileAccountLink} onClick={() => setIsMenuOpen(false)}>Sign Up</a>
+              </>
+            )}
           </div>
         </div>
       </nav>
