@@ -339,6 +339,83 @@
   color: #94a3b8;
 }
 
+.loginPrompt {
+  background: #ffffff;
+  border-radius: 16px;
+  border: 1px solid #e2e8f0;
+  padding: 2rem;
+  text-align: center;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.loginPromptIcon {
+  font-size: 2.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.loginPromptTitle {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0 0 0.5rem;
+}
+
+.loginPromptText {
+  font-size: 0.95rem;
+  color: #64748b;
+  margin: 0 0 1.25rem;
+}
+
+.loginPromptActions {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: center;
+}
+
+.loginPromptBtn {
+  padding: 0.7rem 1.5rem;
+  background: linear-gradient(135deg, #0ea5e9 0%, #00bfff 100%);
+  color: #ffffff;
+  border: none;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(14, 165, 233, 0.25);
+}
+
+.loginPromptBtn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(14, 165, 233, 0.35);
+}
+
+.loginPromptBtnSecondary {
+  padding: 0.7rem 1.5rem;
+  background: #f1f5f9;
+  color: #475569;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.loginPromptBtnSecondary:hover {
+  background: #e2e8f0;
+  color: #0f172a;
+}
+
+.postActionDisabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.postActionDisabled:hover {
+  opacity: 0.5;
+}
+
 @media (max-width: 1024px) {
   .container {
     grid-template-columns: 200px 1fr;

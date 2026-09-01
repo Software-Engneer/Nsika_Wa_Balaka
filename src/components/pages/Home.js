@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useAuth } from '../../context/AuthContext';
 import styles from '../styles/Home.module.css';
 
 const defaultPosts = [
@@ -43,6 +44,7 @@ const stories = [
 ];
 
 function Home() {
+  const { user } = useAuth();
   const [posts, setPosts] = useState(() => {
     const saved = localStorage.getItem('kwathu_posts');
     return saved ? JSON.parse(saved) : defaultPosts;
@@ -65,11 +67,12 @@ function Home() {
   }, [likedPosts]);
 
   const handlePost = () => {
+    if (!user) return;
     const text = postContent.trim();
     if (!text) return;
     const newPost = {
       id: nextId.current,
-      author: 'Your Name',
+      author: user.fullName,
       avatar: '👤',
       time: 'Just now',
       content: text,
@@ -83,6 +86,7 @@ function Home() {
   };
 
   const handleLike = (id) => {
+    if (!user) return;
     setPosts((prev) =>
       prev.map((p) =>
         p.id === id
@@ -102,8 +106,8 @@ function Home() {
           <div className={styles.userCard}>
             <div className={styles.userAvatar}>👤</div>
             <div className={styles.userInfo}>
-              <h3 className={styles.userName}>Your Name</h3>
-              <p className={styles.userHandle}>@username</p>
+              <h3 className={styles.userName}>{user ? user.fullName : 'Guest'}</h3>
+              <p className={styles.userHandle}>{user ? user.email : 'Sign in to participate'}</p>
             </div>
           </div>
           <nav className={styles.sidebarNav}>
@@ -147,21 +151,33 @@ function Home() {
             ))}
           </div>
 
-          <div className={styles.createPost}>
-            <div className={styles.createAvatar}>👤</div>
-            <div className={styles.createInputWrapper}>
-              <textarea
-                value={postContent}
-                onChange={(e) => setPostContent(e.target.value)}
-                placeholder="What's happening in Balaka?"
-                className={styles.createInput}
-                rows={3}
-              />
-              <div className={styles.createActions}>
-                <button className={styles.createButton} onClick={handlePost}>Post</button>
+          {user ? (
+            <div className={styles.createPost}>
+              <div className={styles.createAvatar}>👤</div>
+              <div className={styles.createInputWrapper}>
+                <textarea
+                  value={postContent}
+                  onChange={(e) => setPostContent(e.target.value)}
+                  placeholder="What's happening in Balaka?"
+                  className={styles.createInput}
+                  rows={3}
+                />
+                <div className={styles.createActions}>
+                  <button className={styles.createButton} onClick={handlePost}>Post</button>
+                </div>
               </div>
             </div>
-          </div>
+          ) : (
+            <div className={styles.loginPrompt}>
+              <div className={styles.loginPromptIcon}>🔒</div>
+              <h3 className={styles.loginPromptTitle}>Sign in to interact</h3>
+              <p className={styles.loginPromptText}>Create an account to post, like, comment, and send messages.</p>
+              <div className={styles.loginPromptActions}>
+                <a href="/login" className={styles.loginPromptBtn}>Sign In</a>
+                <a href="/register" className={styles.loginPromptBtnSecondary}>Create Account</a>
+              </div>
+            </div>
+          )}
 
           <div className={styles.feed}>
             {posts.map((post) => (
@@ -175,13 +191,23 @@ function Home() {
                 </div>
                 <p className={styles.postContent}>{post.content}</p>
                 <div className={styles.postActions}>
-                  <button className={styles.postAction} onClick={() => handleLike(post.id)}>
+                  <button
+                    className={`${styles.postAction} ${!user ? styles.postActionDisabled : ''}`}
+                    onClick={() => handleLike(post.id)}
+                    title={!user ? 'Sign in to like' : ''}
+                  >
                     <span>❤️</span> {post.likes}
                   </button>
-                  <button className={styles.postAction}>
+                  <button
+                    className={`${styles.postAction} ${!user ? styles.postActionDisabled : ''}`}
+                    title={!user ? 'Sign in to comment' : ''}
+                  >
                     <span>💬</span> {post.comments}
                   </button>
-                  <button className={styles.postAction}>
+                  <button
+                    className={`${styles.postAction} ${!user ? styles.postActionDisabled : ''}`}
+                    title={!user ? 'Sign in to share' : ''}
+                  >
                     <span>🔄</span> {post.shares}
                   </button>
                 </div>
