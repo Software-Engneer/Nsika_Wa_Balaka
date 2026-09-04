@@ -108,6 +108,210 @@
   margin: 0;
 }
 
+.leagueSelector {
+  margin-bottom: 2rem;
+}
+
+.leagueSelectorTitle {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin: 0 0 1rem;
+}
+
+.leagueGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+
+.leagueCard {
+  background: #ffffff;
+  border: 2px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 1.25rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: left;
+  font-family: inherit;
+  position: relative;
+  overflow: hidden;
+}
+
+.leagueCard:hover {
+  border-color: #38bdf8;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+}
+
+.leagueCardActive {
+  border-color: #0ea5e9;
+  background: linear-gradient(135deg, rgba(14, 165, 233, 0.05) 0%, rgba(0, 191, 255, 0.05) 100%);
+  box-shadow: 0 8px 20px rgba(14, 165, 233, 0.15);
+}
+
+.leagueCardActive::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #0ea5e9 0%, #00bfff 100%);
+}
+
+.leagueCardIcon {
+  font-size: 2rem;
+  flex-shrink: 0;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f1f5f9;
+  border-radius: 12px;
+}
+
+.leagueCardActive .leagueCardIcon {
+  background: rgba(14, 165, 233, 0.1);
+}
+
+.leagueCardBody {
+  flex: 1;
+  min-width: 0;
+}
+
+.leagueCardName {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0 0 0.25rem;
+  line-height: 1.3;
+}
+
+.leagueCardDesc {
+  font-size: 0.85rem;
+  color: #64748b;
+  margin: 0 0 0.4rem;
+  line-height: 1.4;
+}
+
+.leagueCardMeta {
+  font-size: 0.75rem;
+  color: #94a3b8;
+  font-weight: 600;
+}
+
+.leagueHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #e2e8f0;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.leagueName {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0;
+}
+
+.leagueSeason {
+  font-size: 0.9rem;
+  color: #64748b;
+  margin: 0.25rem 0 0;
+}
+
+.favoriteTeamBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: rgba(245, 158, 11, 0.1);
+  border: 1px solid rgba(245, 158, 11, 0.3);
+  color: #92400e;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.clearFavorite {
+  background: none;
+  border: none;
+  color: #92400e;
+  cursor: pointer;
+  font-size: 0.9rem;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  font-weight: 700;
+  font-family: inherit;
+}
+
+.clearFavorite:hover {
+  color: #78350f;
+}
+
+.teamsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.teamCard {
+  background: #ffffff;
+  border: 2px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 1.5rem 1rem;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.teamCard:hover {
+  border-color: #38bdf8;
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+}
+
+.teamCardFavorite {
+  border-color: #f59e0b;
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.05) 0%, rgba(251, 191, 36, 0.05) 100%);
+}
+
+.teamCardIcon {
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.teamCardName {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0;
+}
+
+.teamCardBadge {
+  display: inline-block;
+  margin-top: 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #92400e;
+  background: rgba(245, 158, 11, 0.15);
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+}
+
 .tabs {
   display: flex;
   gap: 0.5rem;
@@ -569,6 +773,15 @@
   .tab {
     padding: 0.5rem 0.9rem;
     font-size: 0.8rem;
+  }
+
+  .leagueGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .leagueHeader {
+    flex-direction: column;
+    align-items: flex-start;
   }
 }
 
