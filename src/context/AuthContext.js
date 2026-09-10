@@ -1,83 +1,89 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import api from '../services/api';
 
 const AuthContext = createContext(null);
 
-const USERS_KEY = 'kwathu_users';
-const SESSION_KEY = 'kwathu_session';
+const TOKEN_KEY = 'kwathu_token';
+const USER_KEY = 'kwathu_user';
 
-function getUsers() {
-  const stored = localStorage.getItem(USERS_KEY);
-  return stored ? JSON.parse(stored) : [];
+function getStoredToken() {
+  return localStorage.getItem(TOKEN_KEY);
 }
 
-function saveUsers(users) {
-  localStorage.setItem(USERS_KEY, JSON.stringify(users));
+function getStoredUser() {
+  const stored = localStorage.getItem(USER_KEY);
+  return stored ? JSON.parse(stored) : null;
+}
+
+function setStoredAuth(token, user) {
+  localStorage.setItem(TOKEN_KEY, token);
+  localStorage.setItem(USER_KEY, JSON.stringify(user));
+}
+
+function clearStoredAuth() {
+  localStorage.removeItem(TOKEN_KEY);
+  localStorage.removeItem(USER_KEY);
 }
 
 export function AuthProvider({ children }) {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState(getStoredUser);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const session = localStorage.getItem(SESSION_KEY);
-    if (session) {
-      try {
-        const parsed = JSON.parse(session);
-        setUser(parsed);
-      } catch {
-        localStorage.removeItem(SESSION_KEY);
+    const initAuth = async () => {
+      const token = getStoredToken();
+      if (!token) {
+        setLoading(false);
+        return;
       }
-    }
-    setLoading(false);
+
+      try {
+        const response = await api.auth.getProfile();
+        setUser(response.user);
+      } catch (error) {
+        console.error('Session expired:', error);
+        clearStoredAuth();
+        setUser(null);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    initAuth();
   }, []);
 
-  const signUp = ({ fullName, email, phone, password }) => {
-    const users = getUsers();
-    const exists = users.find(
-      (u) => u.email.toLowerCase() === email.toLowerCase() || u.phone === phone
-    );
-    if (exists) {
-      return { success: false, error: 'An account with this email or phone already exists.' };
-    }
-    const newUser = {
-      id: Date.now().toString(36) + Math.random().toString(36).slice(2, 8),
-      fullName,
-      email,
-      phone,
-      password,
-      createdAt: new Date().toISOString(),
-    };
-    users.push(newUser);
-    saveUsers(users);
-    const session = { id: newUser.id, fullName: newUser.fullName, email: newUser.email, phone: newUser.phone };
-    localStorage.setItem(SESSION_KEY, JSON.stringify(session));
-    setUser(session);
+  const signUp = async (userData) => {
+    const response = await api.auth.signup(userData);
+    const { token, user } = response;
+    setStoredAuth(token, user);
+    setUser(user);
     return { success: true };
   };
 
-  const signIn = ({ identifier, password }) => {
-    const users = getUsers();
-    const found = users.find(
-      (u) =>
-        (u.email.toLowerCase() === identifier.toLowerCase() || u.phone === identifier) &&
-        u.password === password
-    );
-    if (!found) {
-      return { success: false, error: 'Invalid email/phone or password.' };
-    }
-    const session = { id: found.id, fullName: found.fullName, email: found.email, phone: found.phone };
-    localStorage.setItem(SESSION_KEY, JSON.stringify(session));
-    setUser(session);
+  const signIn = async (credentials) => {
+    const response = await api.auth.signin(credentials);
+    const { token, user } = response;
+    setStoredAuth(token, user);
+    setUser(user);
     return { success: true };
   };
 
   const signOut = () => {
-    localStorage.removeItem(SESSION_KEY);
+    clearStoredAuth();
     setUser(null);
   };
 
+  const updateProfile = async (data) => {
+    const response = await api.auth.updateProfile(data);
+    const updatedUser = response.user;
+    const token = getStoredToken();
+    setStoredAuth(token, updatedUser);
+    setUser(updatedUser);
+    return { success: true, user: updatedUser };
+  };
+
   return (
-    <AuthContext.Provider value={{ user, loading, signUp, signIn, signOut }}>
+    <AuthContext.Provider value={{ user, loading, signUp, signIn, signOut, updateProfile }}>
       {children}
     </AuthContext.Provider>
   );
