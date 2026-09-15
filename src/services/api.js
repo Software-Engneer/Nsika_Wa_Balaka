@@ -1,4 +1,4 @@
-const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:3000';
+const API_URL = (process.env.REACT_APP_API_URL || 'https://my-api-rzqy.onrender.com').replace(/\/$/, '');
 
 async function request(endpoint, options = {}) {
   const token = localStorage.getItem('kwathu_token');
