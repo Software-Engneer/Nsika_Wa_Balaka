@@ -53,19 +53,33 @@ export function AuthProvider({ children }) {
   }, []);
 
   const signUp = async (userData) => {
-    const response = await api.auth.signup(userData);
-    const { token, user } = response;
-    setStoredAuth(token, user);
-    setUser(user);
-    return { success: true };
+    try {
+      const response = await api.auth.signup(userData);
+      const { token, user } = response;
+      setStoredAuth(token, user);
+      setUser(user);
+      return { success: true, user };
+    } catch (error) {
+      return {
+        success: false,
+        error: error.message || 'Sign up failed.',
+      };
+    }
   };
 
   const signIn = async (credentials) => {
-    const response = await api.auth.signin(credentials);
-    const { token, user } = response;
-    setStoredAuth(token, user);
-    setUser(user);
-    return { success: true };
+    try {
+      const response = await api.auth.signin(credentials);
+      const { token, user } = response;
+      setStoredAuth(token, user);
+      setUser(user);
+      return { success: true, user };
+    } catch (error) {
+      return {
+        success: false,
+        error: error.message || 'Sign in failed.',
+      };
+    }
   };
 
   const signOut = () => {

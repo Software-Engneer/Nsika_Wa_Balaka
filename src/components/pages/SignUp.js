@@ -26,7 +26,7 @@ function Registration() {
     setError('');
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
 
@@ -42,8 +42,8 @@ function Registration() {
 
     setLoading(true);
 
-    setTimeout(() => {
-      const result = signUp({
+    try {
+      const result = await signUp({
         fullName: formData.fullName,
         email: formData.email,
         phone: formData.phone,
@@ -53,10 +53,13 @@ function Registration() {
       if (result.success) {
         navigate('/');
       } else {
-        setError(result.error);
-        setLoading(false);
+        setError(result.error || 'Sign up failed.');
       }
-    }, 400);
+    } catch (error) {
+      setError(error.message || 'Sign up failed.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (

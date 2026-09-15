@@ -23,13 +23,13 @@ function SignIn() {
     setError('');
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError('');
 
-    setTimeout(() => {
-      const result = signIn({
+    try {
+      const result = await signIn({
         identifier: formData.identifier,
         password: formData.password,
       });
@@ -37,10 +37,13 @@ function SignIn() {
       if (result.success) {
         navigate('/');
       } else {
-        setError(result.error);
-        setLoading(false);
+        setError(result.error || 'Sign in failed.');
       }
-    }, 400);
+    } catch (error) {
+      setError(error.message || 'Sign in failed.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
