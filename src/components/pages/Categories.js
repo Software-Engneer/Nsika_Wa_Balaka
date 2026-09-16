@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
+import { api } from '../../services/api';
 import styles from '../styles/Categories.module.css';
 
 const categoryData = {
@@ -144,14 +145,8 @@ const defaultNewItem = {
 
 function Categories() {
   const { user } = useAuth();
-  const [items, setItems] = useState(() => {
-    const saved = localStorage.getItem('kwathu_marketplace');
-    if (saved) return JSON.parse(saved);
-    const all = Object.entries(categoryData).flatMap(([category, data]) =>
-      data.items.map((item) => ({ ...item, category }))
-    );
-    return all;
-  });
+  const categories = Object.keys(categoryData);
+  const [items, setItems] = useState([]);
   const [activeTab, setActiveTab] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [sortBy, setSortBy] = useState('newest');
@@ -165,14 +160,55 @@ function Categories() {
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [newItem, setNewItem] = useState(defaultNewItem);
   const [toast, setToast] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
 
-  const categories = Object.keys(categoryData);
+  // Fetch listings from API on mount
+  useEffect(() => {
+    const fetchListings = async () => {
+      try {
+        setLoading(true);
+        const response = await api.listings.getAll();
+        if (response.success && response.listings) {
+          // Transform API data to match frontend format
+          const transformed = response.listings.map((listing) => ({
+            id: listing._id,
+            title: listing.title,
+            description: listing.description,
+            price: `MK ${listing.price.toLocaleString()}`,
+            negotiable: true,
+            condition: listing.condition.replace('_', ' ').replace(/\b\w/g, (l) => l.toUpperCase()),
+            location: listing.location,
+            phone: listing.seller?.phone || '',
+            whatsapp: listing.seller?.phone || '',
+            category: listing.category.charAt(0).toUpperCase() + listing.category.slice(1).replace('_', ' '),
+            image: listing.images?.[0] || 'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=400&h=300&fit=crop',
+            seller: listing.seller?.fullName || 'Unknown',
+            posted: new Date(listing.createdAt).toLocaleDateString(),
+            _raw: listing, // Keep original for reference
+          }));
+          setItems(transformed);
+        }
+      } catch (error) {
+        console.error('Failed to fetch listings:', error);
+        // Fallback to localStorage
+        const saved = localStorage.getItem('kwathu_marketplace');
+        if (saved) setItems(JSON.parse(saved));
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchListings();
+  }, []);
 
-  React.useEffect(() => {
-    localStorage.setItem('kwathu_marketplace', JSON.stringify(items));
-  }, [items]);
+  // Sync to localStorage for offline support
+  useEffect(() => {
+    if (!loading) {
+      localStorage.setItem('kwathu_marketplace', JSON.stringify(items));
+    }
+  }, [items, loading]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     localStorage.setItem('kwathu_favorites', JSON.stringify(favorites));
   }, [favorites]);
 
@@ -231,34 +267,79 @@ function Categories() {
     return result;
   })();
 
-  const handleCreate = (e) => {
+  const handleCreate = async (e) => {
     e.preventDefault();
     if (!user) {
       showToast('Sign in to post listings', 'info');
       return;
     }
-    const item = {
-      id: Date.now(),
-      ...newItem,
-      price: `MK ${parseInt(newItem.price || 0).toLocaleString()}`,
-      seller: user.fullName,
-      posted: 'Just now',
-      phone: newItem.phone || user.phone,
-      whatsapp: newItem.whatsapp || user.phone,
-      image: newItem.image || 'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=400&h=300&fit=crop',
-    };
-    setItems([item, ...items]);
-    setNewItem(defaultNewItem);
-    setShowCreateForm(false);
-    showToast('Listing posted successfully');
+    setSubmitting(true);
+    try {
+      // Map frontend categories to backend enum
+      const categoryMap = {
+        'Clothes and Shoes': 'clothes_and_shoes',
+        'Furniture': 'furniture',
+        'Phones & Electronics': 'phones_electronics',
+        'Building Materials': 'building_materials',
+      };
+      // Map frontend conditions to backend enum
+      const conditionMap = {
+        'New': 'new',
+        'Used - Like New': 'like_new',
+        'Used - Good': 'good',
+        'Used - Fair': 'fair',
+      };
+      const payload = {
+        title: newItem.title,
+        description: newItem.description,
+        price: parseInt(newItem.price) || 0,
+        category: categoryMap[newItem.category] || newItem.category.toLowerCase().replace(' ', '_'),
+        condition: conditionMap[newItem.condition] || newItem.condition.toLowerCase().replace(' ', '_').replace('-', '_'),
+        location: newItem.location,
+        images: newItem.image ? [newItem.image] : [],
+      };
+      const response = await api.listings.create(payload);
+      if (response.success && response.listing) {
+        const listing = response.listing;
+        const item = {
+          id: listing._id,
+          title: listing.title,
+          description: listing.description,
+          price: `MK ${listing.price.toLocaleString()}`,
+          negotiable: true,
+          condition: listing.condition.replace('_', ' ').replace(/\b\w/g, (l) => l.toUpperCase()),
+          location: listing.location,
+          phone: newItem.phone || user.phone,
+          whatsapp: newItem.whatsapp || user.phone,
+          category: listing.category.charAt(0).toUpperCase() + listing.category.slice(1).replace('_', ' '),
+          image: listing.images?.[0] || 'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=400&h=300&fit=crop',
+          seller: user.fullName,
+          posted: 'Just now',
+          _raw: listing,
+        };
+        setItems([item, ...items]);
+        setNewItem(defaultNewItem);
+        setShowCreateForm(false);
+        showToast('Listing posted successfully');
+      }
+    } catch (error) {
+      showToast(error.message || 'Failed to post listing', 'error');
+    } finally {
+      setSubmitting(false);
+    }
   };
 
-  const handleDelete = (id, e) => {
+  const handleDelete = async (id, e) => {
     if (e) e.stopPropagation();
     if (window.confirm('Delete this listing?')) {
-      setItems((prev) => prev.filter((item) => item.id !== id));
-      setSelectedItem(null);
-      showToast('Listing deleted');
+      try {
+        await api.listings.delete(id);
+        setItems((prev) => prev.filter((item) => item.id !== id));
+        setSelectedItem(null);
+        showToast('Listing deleted');
+      } catch (error) {
+        showToast(error.message || 'Failed to delete listing', 'error');
+      }
     }
   };
 
@@ -367,7 +448,9 @@ function Categories() {
                   <input type="url" value={newItem.image} onChange={(e) => setNewItem({ ...newItem, image: e.target.value })} className={styles.input} placeholder="https://..." />
                 </div>
               </div>
-              <button type="submit" className={styles.submitButton}>Post Listing</button>
+              <button type="submit" className={styles.submitButton} disabled={submitting}>
+              {submitting ? 'Posting...' : 'Post Listing'}
+            </button>
             </form>
           )}
 
@@ -430,7 +513,13 @@ function Categories() {
           </div>
 
           <div className={styles.tabContent}>
-            {filteredItems.length === 0 ? (
+            {loading ? (
+              <div className={styles.emptyState}>
+                <div className={styles.emptyIcon}>⏳</div>
+                <h3 className={styles.emptyTitle}>Loading listings...</h3>
+                <p className={styles.emptyText}>Please wait while we fetch the latest listings.</p>
+              </div>
+            ) : filteredItems.length === 0 ? (
               <div className={styles.emptyState}>
                 <div className={styles.emptyIcon}>📦</div>
                 <h3 className={styles.emptyTitle}>No listings found</h3>

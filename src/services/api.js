@@ -1,4 +1,4 @@
-const API_URL = (process.env.REACT_APP_API_URL || 'https://my-api-rzqy.onrender.com').replace(/\/$/, '');
+const API_URL = (process.env.REACT_APP_API_URL || (process.env.NODE_ENV === 'production' ? 'https://my-api-rzqy.onrender.com' : 'http://localhost:3000')).replace(/\/$/, '');
 
 async function request(endpoint, options = {}) {
   const token = localStorage.getItem('kwathu_token');
@@ -47,6 +47,31 @@ export const api = {
     getAll: () => request('/api/users'),
 
     getById: (id) => request(`/api/users/${id}`),
+  },
+
+  listings: {
+    getAll: (params = {}) => {
+      const query = new URLSearchParams(params).toString();
+      return request(`/api/listings${query ? `?${query}` : ''}`);
+    },
+
+    getById: (id) => request(`/api/listings/${id}`),
+
+    create: (data) => request('/api/listings', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    }),
+
+    update: (id, data) => request(`/api/listings/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(data),
+    }),
+
+    delete: (id) => request(`/api/listings/${id}`, {
+      method: 'DELETE',
+    }),
+
+    getMyListings: () => request('/api/listings/my-listings'),
   },
 };
 
