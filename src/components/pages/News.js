@@ -49,6 +49,11 @@ function News() {
   const [toast, setToast] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  // Clear old localStorage key on mount
+  useEffect(() => {
+    localStorage.removeItem('kwathu_news');
+  }, []);
+
   // Fetch news from API on mount
   useEffect(() => {
     const fetchNews = async () => {

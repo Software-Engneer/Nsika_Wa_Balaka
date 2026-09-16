@@ -37,6 +37,11 @@ function Categories() {
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
 
+  // Clear old localStorage key on mount
+  useEffect(() => {
+    localStorage.removeItem('kwathu_marketplace');
+  }, []);
+
   // Fetch listings from API on mount
   useEffect(() => {
     const fetchListings = async () => {
