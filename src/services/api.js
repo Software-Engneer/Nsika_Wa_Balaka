@@ -73,6 +73,37 @@ export const api = {
 
     getMyListings: () => request('/api/listings/my-listings'),
   },
+
+  news: {
+    getAll: (params = {}) => {
+      const query = new URLSearchParams(params).toString();
+      return request(`/api/news${query ? `?${query}` : ''}`);
+    },
+
+    getById: (id) => request(`/api/news/${id}`),
+
+    create: (data) => request('/api/news', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    }),
+
+    update: (id, data) => request(`/api/news/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(data),
+    }),
+
+    delete: (id) => request(`/api/news/${id}`, {
+      method: 'DELETE',
+    }),
+
+    like: (id) => request(`/api/news/${id}/like`, {
+      method: 'POST',
+    }),
+
+    share: (id) => request(`/api/news/${id}/share`, {
+      method: 'POST',
+    }),
+  },
 };
 
 export default api;

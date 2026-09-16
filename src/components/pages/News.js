@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
+import { api } from '../../services/api';
 import styles from '../styles/News.module.css';
 
 const categoryConfig = {
@@ -13,56 +14,7 @@ const categoryConfig = {
   Agriculture: { icon: '🌾', color: '#22c55e', bg: '#f0fdf4' },
 };
 
-const initialNews = [
-  {
-    id: 1, title: 'Balaka Market Fire Destroys 10 Stalls',
-    excerpt: 'A fire broke out early this morning at the main market in Balaka, destroying an estimated 10 stalls. Firefighters responded quickly and no injuries were reported.',
-    content: 'A fire broke out early this morning at the main market in Balaka, destroying an estimated 10 stalls. Firefighters responded quickly and no injuries were reported. The cause of the fire is still under investigation, but officials suspect an electrical fault. Market authorities have assured traders that temporary spaces will be allocated while reconstruction takes place. Relief funds are being mobilized to support affected vendors.',
-    category: 'Breaking', time: '2026-09-04T08:30:00', author: 'Kwathu News', image: 'https://images.unsplash.com/photo-1540910419892-4a36d2c3266c?w=800&h=400&fit=crop', likes: 34, comments: 12, shares: 8, readTime: '3 min read',
-  },
-  {
-    id: 2, title: 'New Road Construction Begins in Balaka Township',
-    excerpt: 'The Ministry of Transport has announced the start of a major road rehabilitation project in Balaka township, expected to improve connectivity within the district.',
-    content: 'The Ministry of Transport has announced the start of a major road rehabilitation project in Balaka township. The project, valued at MK 2.5 billion, will rehabilitate 45km of roads connecting key areas including the market, hospital, and schools. Construction is expected to take 18 months and will create over 200 local jobs. Residents are advised to use alternative routes during construction.',
-    category: 'Development', time: '2026-09-03T14:00:00', author: 'Kwathu News', image: 'https://images.unsplash.com/photo-1515165592879-5a74da68cc3c?w=800&h=400&fit=crop', likes: 28, comments: 7, shares: 5, readTime: '4 min read',
-  },
-  {
-    id: 3, title: 'Local Football Club Advances to Semi-Finals',
-    excerpt: 'Balaka United FC has secured a spot in the semi-finals after a thrilling 2-1 victory over Mulanje FC at the Balaka Stadium.',
-    content: 'Balaka United FC has secured a spot in the semi-finals after a thrilling 2-1 victory over Mulanje FC at the Balaka Stadium. The winning goal came in the 89th minute, sending the home crowd into a frenzy. Coach John Banda praised his team\'s resilience. The semi-final match is scheduled for next month at the national stadium.',
-    category: 'Sports', time: '2026-09-02T18:00:00', author: 'Kwathu Sports', image: 'https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=800&h=400&fit=crop', likes: 67, comments: 23, shares: 15, readTime: '3 min read',
-  },
-  {
-    id: 4, title: 'Community Health Initiative Launches in Balaka',
-    excerpt: 'A new health outreach program has been launched to provide free medical checkups and malaria prevention supplies to residents in rural areas around Balaka.',
-    content: 'A new health outreach program has been launched to provide free medical checkups and malaria prevention supplies to residents in rural areas around Balaka. The initiative, led by the District Health Office in partnership with local NGOs, aims to reach over 10,000 people in the first six months. Services will include HIV testing, malaria prophylaxis, maternal health checks, and nutrition counseling.',
-    category: 'Health', time: '2026-09-01T10:00:00', author: 'Kwathu Health', image: 'https://images.unsplash.com/photo-1505751172876-fa1923c5c528?w=800&h=400&fit=crop', likes: 45, comments: 9, shares: 12, readTime: '5 min read',
-  },
-  {
-    id: 5, title: 'Rainfall Warning Issued for Balaka and Surrounding Areas',
-    excerpt: 'The Department of Climate Change has issued a heavy rainfall warning for Balaka and neighboring districts. Residents are advised to take necessary precautions.',
-    content: 'The Department of Climate Change has issued a heavy rainfall warning for Balaka and neighboring districts. Heavy downpours accompanied by strong winds are expected over the next 72 hours. Residents in low-lying areas are advised to move to higher ground. District Disaster Management is on high alert and emergency shelters have been identified.',
-    category: 'Weather', time: '2026-08-31T06:00:00', author: 'Kwathu News', image: 'https://images.unsplash.com/photo-1428592953211-077101b2021e?w=800&h=400&fit=crop', likes: 19, comments: 4, shares: 20, readTime: '2 min read',
-  },
-  {
-    id: 6, title: 'Balaka Youth Group Wins National Entrepreneurship Award',
-    excerpt: 'A local youth entrepreneurship group from Balaka has been recognized nationally for their innovative agricultural startup creating jobs for young people.',
-    content: 'A local youth entrepreneurship group from Balaka has been recognized nationally for their innovative agricultural startup creating jobs for young people. The "Young Farmers Collective" received the National Youth Entrepreneurship Award at a ceremony in Lilongwe. The group has trained over 150 young people in modern farming techniques and created 30 direct jobs in the district.',
-    category: 'Business', time: '2026-08-30T11:00:00', author: 'Kwathu Business', image: 'https://images.unsplash.com/photo-1521737604893-d14cc237f11d?w=800&h=400&fit=crop', likes: 52, comments: 14, shares: 18, readTime: '4 min read',
-  },
-  {
-    id: 7, title: 'New School Block Inaugurated in Rural Balaka',
-    excerpt: 'A new classroom block has been officially opened at Nankhaka Primary School, funded by a community-driven fundraising campaign.',
-    content: 'A new classroom block has been officially opened at Nankhaka Primary School, funded by a community-driven fundraising campaign. The MK 15 million project added 8 new classrooms, reducing the student-to-teacher ratio significantly. Parents and teachers celebrated the milestone, which took 10 months to complete. The block includes a library and a computer lab.',
-    category: 'Education', time: '2026-08-29T09:00:00', author: 'Kwathu Education', image: 'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=800&h=400&fit=crop', likes: 38, comments: 6, shares: 9, readTime: '3 min read',
-  },
-  {
-    id: 8, title: 'Tobacco Farmers Report Record Yields This Season',
-    excerpt: 'Tobacco farmers in Balaka are celebrating record yields following improved farming practices and favorable weather conditions this season.',
-    content: 'Tobacco farmers in Balaka are celebrating record yields following improved farming practices and favorable weather conditions this season. The Tobacco Control Commission reports that average yields per hectare have increased by 18% compared to last year. Farmers credit the gains to better seed varieties, timely rains, and extension services provided by the Ministry of Agriculture.',
-    category: 'Agriculture', time: '2026-08-28T07:00:00', author: 'Kwathu Agriculture', image: 'https://images.unsplash.com/photo-1595854755620-681835b0d38a?w=800&h=400&fit=crop', likes: 41, comments: 11, shares: 7, readTime: '4 min read',
-  },
-];
+const categories = Object.keys(categoryConfig);
 
 function getRelativeTime(dateStr) {
   const date = new Date(dateStr);
@@ -81,10 +33,7 @@ function getRelativeTime(dateStr) {
 
 function News() {
   const { user } = useAuth();
-  const [news, setNews] = useState(() => {
-    const saved = localStorage.getItem('kwathu_news');
-    return saved ? JSON.parse(saved) : initialNews;
-  });
+  const [news, setNews] = useState([]);
   const [activeCategory, setActiveCategory] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [sortBy, setSortBy] = useState('newest');
@@ -98,11 +47,46 @@ function News() {
   });
   const [selectedArticle, setSelectedArticle] = useState(null);
   const [toast, setToast] = useState(null);
+  const [loading, setLoading] = useState(true);
 
+  // Fetch news from API on mount
   useEffect(() => {
-    localStorage.setItem('kwathu_news', JSON.stringify(news));
-  }, [news]);
+    const fetchNews = async () => {
+      try {
+        setLoading(true);
+        const response = await api.news.getAll({ sort: sortBy });
+        if (response.success && response.news) {
+          // Transform API data to match frontend format
+          const transformed = response.news.map((article) => ({
+            id: article._id,
+            title: article.title,
+            excerpt: article.excerpt,
+            content: article.content,
+            category: article.category,
+            time: article.createdAt,
+            author: article.author?.fullName || 'Kwathu News',
+            image: article.image || 'https://images.unsplash.com/photo-1495020689067-958852a7765e?w=800&h=400&fit=crop',
+            likes: article.likes || 0,
+            comments: article.comments || 0,
+            shares: article.shares || 0,
+            readTime: article.readTime || '3 min read',
+            _raw: article,
+          }));
+          setNews(transformed);
+        } else {
+          setNews([]);
+        }
+      } catch (error) {
+        console.error('Failed to fetch news:', error);
+        setNews([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchNews();
+  }, [sortBy]);
 
+  // Keep saved/liked in localStorage only (UI state)
   useEffect(() => {
     localStorage.setItem('kwathu_news_saved', JSON.stringify(saved));
   }, [saved]);
@@ -116,14 +100,23 @@ function News() {
     setTimeout(() => setToast(null), 3000);
   };
 
-  const handleLike = (id, e) => {
+  const handleLike = async (id, e) => {
     e.stopPropagation();
     if (!user) {
       showToast('Sign in to like articles', 'info');
       return;
     }
-    setNews((prev) => prev.map((item) => item.id === id ? { ...item, likes: liked.includes(id) ? item.likes - 1 : item.likes + 1 } : item));
-    setLiked((prev) => (prev.includes(id) ? prev.filter((l) => l !== id) : [...prev, id]));
+    const wasLiked = liked.includes(id);
+    setNews((prev) => prev.map((item) => item.id === id ? { ...item, likes: wasLiked ? item.likes - 1 : item.likes + 1 } : item));
+    setLiked((prev) => (wasLiked ? prev.filter((l) => l !== id) : [...prev, id]));
+    try {
+      await api.news.like(id);
+    } catch (error) {
+      // Revert on error
+      setNews((prev) => prev.map((item) => item.id === id ? { ...item, likes: wasLiked ? item.likes + 1 : item.likes - 1 } : item));
+      setLiked((prev) => (wasLiked ? [...prev, id] : prev.filter((l) => l !== id)));
+      showToast('Failed to like article', 'error');
+    }
   };
 
   const handleSave = (id, e) => {
@@ -135,7 +128,7 @@ function News() {
     setSaved((prev) => (prev.includes(id) ? prev.filter((s) => s !== id) : [...prev, id]));
   };
 
-  const handleShare = (article, e) => {
+  const handleShare = async (article, e) => {
     if (e) e.stopPropagation();
     const text = `${article.title}\n\n${article.excerpt}\n\nRead more on Kwathu News.`;
     if (navigator.share) {
@@ -143,6 +136,12 @@ function News() {
     } else if (navigator.clipboard) {
       navigator.clipboard.writeText(text);
       showToast('Article copied to clipboard');
+    }
+    try {
+      await api.news.share(article.id);
+      setNews((prev) => prev.map((item) => item.id === article.id ? { ...item, shares: item.shares + 1 } : item));
+    } catch (error) {
+      console.error('Failed to track share:', error);
     }
   };
 
@@ -263,7 +262,13 @@ function News() {
           </div>
 
           <div className={styles.tabContent}>
-            {filtered.length === 0 ? (
+            {loading ? (
+              <div className={styles.emptyState}>
+                <div className={styles.emptyIcon}>⏳</div>
+                <h3 className={styles.emptyTitle}>Loading articles...</h3>
+                <p className={styles.emptyText}>Please wait while we fetch the latest news.</p>
+              </div>
+            ) : filtered.length === 0 ? (
               <div className={styles.emptyState}>
                 <div className={styles.emptyIcon}>📰</div>
                 <h3 className={styles.emptyTitle}>No articles found</h3>
