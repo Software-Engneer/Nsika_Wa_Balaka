@@ -172,9 +172,6 @@ function News() {
     filtered = [...filtered].sort((a, b) => (saved.includes(b.id) ? 1 : 0) - (saved.includes(a.id) ? 1 : 0));
   }
 
-  const breakingNews = filtered.filter((n) => n.category === 'Breaking');
-  const regularNews = filtered.filter((n) => n.category !== 'Breaking');
-
   return (
     <div className={styles.page}>
       <div className={styles.container}>
@@ -206,16 +203,6 @@ function News() {
             </div>
           </div>
 
-          {breakingNews.length > 0 && (
-            <div className={styles.breakingBanner}>
-              <span className={styles.breakingIcon}>🚨</span>
-              <div className={styles.breakingContent}>
-                <span className={styles.breakingLabel}>BREAKING</span>
-                <span className={styles.breakingText}>{breakingNews.length} breaking story{breakingNews.length > 1 ? 'ies' : 'y'} — scroll down to read</span>
-              </div>
-            </div>
-          )}
-
           <div className={styles.searchBar}>
             <span className={styles.searchIcon}>🔍</span>
             <input
@@ -246,26 +233,6 @@ function News() {
             </div>
           </div>
 
-          <div className={styles.categoryTabs}>
-            <button className={`${styles.categoryTab} ${activeCategory === 'all' ? styles.categoryTabActive : ''}`} onClick={() => setActiveCategory('all')}>
-              All
-            </button>
-            {categories.map((cat) => {
-              const config = categoryConfig[cat];
-              return (
-                <button
-                  key={cat}
-                  className={`${styles.categoryTab} ${activeCategory === cat ? styles.categoryTabActive : ''}`}
-                  onClick={() => setActiveCategory(cat)}
-                  style={activeCategory === cat ? { background: config.bg, color: config.color, borderColor: config.color } : {}}
-                >
-                  <span>{config.icon}</span> {cat}
-                  <span className={styles.categoryCount}>{categoryCounts[cat] || 0}</span>
-                </button>
-              );
-            })}
-          </div>
-
           <div className={styles.tabContent}>
             {loading ? (
               <div className={styles.emptyState}>
@@ -281,43 +248,11 @@ function News() {
               </div>
             ) : (
               <div className={styles.newsList}>
-                {breakingNews.map((article) => (
-                  <article key={article.id} className={`${styles.newsCard} ${styles.breakingCard}`} onClick={() => setSelectedArticle(article)}>
-                    <div className={styles.newsImage}>
-                      <img src={article.image} alt={article.title} loading="lazy" />
-                      <span className={styles.newsCategoryBadge} style={{ background: categoryConfig[article.category]?.bg, color: categoryConfig[article.category]?.color }}>
-                        {categoryConfig[article.category]?.icon} {article.category}
-                      </span>
-                    </div>
-                    <div className={styles.newsBody}>
-                      <div className={styles.newsHeader}>
-                        <span className={`${styles.badge} ${styles.breakingBadge}`}>Breaking</span>
-                        <span className={styles.time}>{getRelativeTime(article.time)}</span>
-                      </div>
-                      <h2 className={styles.newsTitle}>{article.title}</h2>
-                      <p className={styles.newsExcerpt}>{article.excerpt}</p>
-                      <div className={styles.newsFooter}>
-                        <span className={styles.author}>✍️ {article.author}</span>
-                        <div className={styles.newsActions}>
-                          <button className={styles.likeButton} onClick={(e) => handleLike(article.id, e)} aria-label="Like">
-                            <span>{liked.includes(article.id) ? '❤️' : '🤍'}</span>
-                            <span className={styles.actionCount}>{article.likes}</span>
-                          </button>
-                          <button className={styles.actionButton} onClick={(e) => handleSave(article.id, e)} aria-label="Save">
-                            <span>{saved.includes(article.id) ? '🔖' : '📑'}</span>
-                          </button>
-                          <button className={styles.actionButton} onClick={(e) => handleShare(article, e)} aria-label="Share">
-                            ↗
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  </article>
-                ))}
-                {regularNews.map((article) => {
+                {filtered.map((article) => {
                   const catConfig = categoryConfig[article.category] || categoryConfig.Breaking;
+                  const isBreaking = article.category === 'Breaking';
                   return (
-                    <article key={article.id} className={styles.newsCard} onClick={() => setSelectedArticle(article)}>
+                    <article key={article.id} className={`${styles.newsCard} ${isBreaking ? styles.breakingCard : ''}`} onClick={() => setSelectedArticle(article)}>
                       <div className={styles.newsImage}>
                         <img src={article.image} alt={article.title} loading="lazy" />
                         <span className={styles.newsCategoryBadge} style={{ background: catConfig.bg, color: catConfig.color }}>
@@ -326,20 +261,13 @@ function News() {
                       </div>
                       <div className={styles.newsBody}>
                         <div className={styles.newsHeader}>
-                          <span className={`${styles.badge} ${styles.regularBadge}`}>{article.category}</span>
+                          {isBreaking && <span className={`${styles.badge} ${styles.breakingBadge}`}>Breaking</span>}
                           <span className={styles.time}>{getRelativeTime(article.time)}</span>
                         </div>
                         <h2 className={styles.newsTitle}>{article.title}</h2>
                         <p className={styles.newsExcerpt}>{article.excerpt}</p>
-                        <div className={styles.newsMetaRow}>
-                          <span className={styles.readTime}>⏱️ {article.readTime}</span>
-                          <span className={styles.author}>✍️ {article.author}</span>
-                        </div>
                         <div className={styles.newsFooter}>
-                          <span className={styles.newsStats}>
-                            <span>💬 {article.comments}</span>
-                            <span>🔄 {article.shares}</span>
-                          </span>
+                          <span className={styles.author}>✍️ {article.author}</span>
                           <div className={styles.newsActions}>
                             <button className={styles.likeButton} onClick={(e) => handleLike(article.id, e)} aria-label="Like">
                               <span>{liked.includes(article.id) ? '❤️' : '🤍'}</span>
