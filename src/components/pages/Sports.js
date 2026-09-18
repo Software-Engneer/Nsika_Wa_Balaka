@@ -184,77 +184,63 @@ function Sports() {
             <p className={styles.subtitle}>Football fixtures, results, and standings across all Balaka leagues</p>
           </div>
 
-          <div className={styles.leagueSelector}>
-            <h2 className={styles.leagueSelectorTitle}>Leagues</h2>
-            <div className={styles.leagueGrid}>
-              {Object.entries(leagues).map(([key, l]) => (
-                <button
-                  key={key}
-                  className={`${styles.leagueCard} ${activeLeague === key ? styles.leagueCardActive : ''}`}
-                  onClick={() => {
-                    setActiveLeague(key);
-                    setActiveTab('fixtures');
-                    setSearchQuery('');
-                  }}
-                >
-                  <div className={styles.leagueCardIcon}>
-                    {key === 'ngwangwa' ? '🏆' : key === 'super' ? '⭐' : '🥈'}
-                  </div>
-                  <div className={styles.leagueCardBody}>
-                    <h3 className={styles.leagueCardName}>{l.name}</h3>
-                    <p className={styles.leagueCardDesc}>{l.description}</p>
-                    <span className={styles.leagueCardMeta}>{l.teams.length} teams · {l.season}</span>
-                  </div>
-                </button>
-              ))}
+          <div className={styles.leagueSelectorBar}>
+            <div className={styles.leagueDropdown}>
+              <label className={styles.leagueLabel}></label>
+              <select 
+                value={activeLeague} 
+                onChange={(e) => {
+                  setActiveLeague(e.target.value);
+                  setActiveTab('fixtures');
+                  setSearchQuery('');
+                }}
+                className={styles.leagueSelect}
+              >
+                {Object.entries(leagues).map(([key, l]) => (
+                  <option key={key} value={key}>{l.name}</option>
+                ))}
+              </select>
+            </div>
+            <div className={styles.tabs}>
+              <button
+                className={`${styles.tab} ${activeTab === 'fixtures' ? styles.activeTab : ''}`}
+                onClick={() => setActiveTab('fixtures')}
+              >
+                Fixtures ({league.fixtures.length})
+              </button>
+              <button
+                className={`${styles.tab} ${activeTab === 'results' ? styles.activeTab : ''}`}
+                onClick={() => setActiveTab('results')}
+              >
+                Results ({league.results.length})
+              </button>
+              <button
+                className={`${styles.tab} ${activeTab === 'standings' ? styles.activeTab : ''}`}
+                onClick={() => setActiveTab('standings')}
+              >
+                Standings ({league.standings.length})
+              </button>
+              <button
+                className={`${styles.tab} ${activeTab === 'teams' ? styles.activeTab : ''}`}
+                onClick={() => setActiveTab('teams')}
+              >
+                Teams
+              </button>
+              <button
+                className={`${styles.tab} ${activeTab === 'news' ? styles.activeTab : ''}`}
+                onClick={() => setActiveTab('news')}
+              >
+                News
+              </button>
             </div>
           </div>
 
-          <div className={styles.leagueHeader}>
-            <div>
-              <h2 className={styles.leagueName}>{league.name}</h2>
-              <p className={styles.leagueSeason}>{league.season}</p>
+          {favoriteTeam && (
+            <div className={styles.favoriteTeamBadge}>
+              ⭐ Following: <strong>{favoriteTeam}</strong>
+              <button className={styles.clearFavorite} onClick={() => setFavoriteTeam(null)}>✕</button>
             </div>
-            {favoriteTeam && (
-              <div className={styles.favoriteTeamBadge}>
-                ⭐ Following: <strong>{favoriteTeam}</strong>
-                <button className={styles.clearFavorite} onClick={() => setFavoriteTeam(null)}>✕</button>
-              </div>
-            )}
-          </div>
-
-          <div className={styles.tabs}>
-            <button
-              className={`${styles.tab} ${activeTab === 'fixtures' ? styles.activeTab : ''}`}
-              onClick={() => setActiveTab('fixtures')}
-            >
-              Fixtures ({league.fixtures.length})
-            </button>
-            <button
-              className={`${styles.tab} ${activeTab === 'results' ? styles.activeTab : ''}`}
-              onClick={() => setActiveTab('results')}
-            >
-              Results ({league.results.length})
-            </button>
-            <button
-              className={`${styles.tab} ${activeTab === 'standings' ? styles.activeTab : ''}`}
-              onClick={() => setActiveTab('standings')}
-            >
-              Standings ({league.standings.length})
-            </button>
-            <button
-              className={`${styles.tab} ${activeTab === 'teams' ? styles.activeTab : ''}`}
-              onClick={() => setActiveTab('teams')}
-            >
-              Teams
-            </button>
-            <button
-              className={`${styles.tab} ${activeTab === 'news' ? styles.activeTab : ''}`}
-              onClick={() => setActiveTab('news')}
-            >
-              News
-            </button>
-          </div>
+          )}
 
           {activeTab === 'fixtures' && (
             <div className={styles.tabContent}>

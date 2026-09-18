@@ -21,7 +21,6 @@ const defaultNewItem = {
 function Categories() {
   const { user } = useAuth();
   const [items, setItems] = useState([]);
-  const [activeTab, setActiveTab] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [sortBy, setSortBy] = useState('newest');
   const [conditionFilter, setConditionFilter] = useState('all');
@@ -100,7 +99,7 @@ function Categories() {
   };
 
   const filteredItems = (() => {
-    let result = activeTab === null ? items : items.filter((item) => item.category === activeTab);
+    let result = items;
 
     if (searchQuery.trim()) {
       const q = searchQuery.toLowerCase();
@@ -368,22 +367,8 @@ function Categories() {
                 <option value="price-high">Price: High to Low</option>
                 <option value="favorites">Favorites first</option>
               </select>
-            </div>
-          </div>
-
-          <div className={styles.tabs}>
-            <button className={`${styles.tab} ${activeTab === null ? styles.activeTab : ''}`} onClick={() => setActiveTab(null)}>
-              All ({items.length})
-            </button>
-            {categories.map((category) => {
-              const count = items.filter((i) => i.category === category).length;
-              return (
-                <button key={category} className={`${styles.tab} ${activeTab === category ? styles.activeTab : ''}`} onClick={() => setActiveTab(category)}>
-                  {category} ({count})
-                </button>
-              );
-            })}
-          </div>
+</div>
+        </div>
 
           <div className={styles.tabContent}>
             {loading ? (

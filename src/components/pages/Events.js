@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
+import { api } from '../../services/api';
 import styles from '../styles/Events.module.css';
 
 const categoryConfig = {
@@ -10,44 +11,7 @@ const categoryConfig = {
   Education: { icon: '📚', color: '#ec4899', bg: 'rgba(236, 72, 153, 0.1)' },
 };
 
-const initialEvents = [
-  {
-    id: 1, title: 'Balaka Community Cleanup Day', description: 'Join us for a community cleanup event around Balaka town. Gloves and bags will be provided.',
-    date: '2026-09-01', time: '08:00', venue: 'Balaka Town Hall', organizer: 'Balaka Youth Group', category: 'Community',
-    attendees: 24, isAttending: false, saved: false,
-    image: 'https://images.unsplash.com/photo-1559027615-c462-8c81-4a599f1e1c48?w=600&h=300&fit=crop',
-  },
-  {
-    id: 2, title: 'Local Music Festival', description: 'A day of live music, food, and fun. Featuring local artists from Balaka and surrounding areas.',
-    date: '2026-09-10', time: '14:00', venue: 'Balaka Stadium Grounds', organizer: 'Kwathu Events', category: 'Entertainment',
-    attendees: 156, isAttending: true, saved: false,
-    image: 'https://images.unsplash.com/photo-1459749411175-04bf5292f2f3?w=600&h=300&fit=crop',
-  },
-  {
-    id: 3, title: 'Small Business Workshop', description: 'Learn how to start and grow your small business in Balaka. Free training and mentorship.',
-    date: '2026-09-15', time: '10:00', venue: 'Community Center', organizer: 'Malawi Enterprise', category: 'Business',
-    attendees: 45, isAttending: false, saved: false,
-    image: 'https://images.unsplash.com/photo-1552664730-d307ca884978?w=600&h=300&fit=crop',
-  },
-  {
-    id: 4, title: 'Football Tournament Finals', description: 'Watch the finals of the Balaka District Football Tournament. Cheer for your favorite team!',
-    date: '2026-09-20', time: '15:00', venue: 'Balaka Stadium', organizer: 'Balaka Sports Council', category: 'Sports',
-    attendees: 320, isAttending: false, saved: false,
-    image: 'https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=600&h=300&fit=crop',
-  },
-  {
-    id: 5, title: 'Youth Career Expo', description: 'Explore career opportunities, meet employers, and get professional development tips.',
-    date: '2026-09-25', time: '09:00', venue: 'Balaka Technical College', organizer: 'Youth Council', category: 'Education',
-    attendees: 120, isAttending: false, saved: false,
-    image: 'https://images.unsplash.com/photo-1540575467068-54d120a3df99?w=600&h=300&fit=crop',
-  },
-  {
-    id: 6, title: 'Farmers Market Day', description: 'Fresh produce, local crafts, and family fun at the weekly Balaka farmers market.',
-    date: '2026-09-06', time: '07:00', venue: 'Balaka Market Square', organizer: 'District Council', category: 'Community',
-    attendees: 85, isAttending: false, saved: false,
-    image: 'https://images.unsplash.com/photo-1488459716781-31db52582fe9?w=600&h=300&fit=crop',
-  },
-];
+const categories = Object.keys(categoryConfig);
 
 function getRelativeTime(dateStr) {
   const date = new Date(dateStr + 'T00:00:00');
@@ -63,10 +27,7 @@ function getRelativeTime(dateStr) {
 
 function Events() {
   const { user } = useAuth();
-  const [events, setEvents] = useState(() => {
-    const saved = localStorage.getItem('kwathu_events');
-    return saved ? JSON.parse(saved) : initialEvents;
-  });
+  const [events, setEvents] = useState([]);
   const [activeCategory, setActiveCategory] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [sortBy, setSortBy] = useState('date');
@@ -80,11 +41,51 @@ function Events() {
   });
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [toast, setToast] = useState(null);
+  const [loading, setLoading] = useState(true);
 
+  // Clear old localStorage key on mount
   useEffect(() => {
-    localStorage.setItem('kwathu_events', JSON.stringify(events));
-  }, [events]);
+    localStorage.removeItem('kwathu_events');
+  }, []);
 
+  // Fetch events from API on mount
+  useEffect(() => {
+    const fetchEvents = async () => {
+      try {
+        setLoading(true);
+        const response = await api.events.getAll({ sort: sortBy });
+        if (response.success && response.events) {
+          // Transform API data to match frontend format
+          const transformed = response.events.map((event) => ({
+            id: event._id,
+            title: event.title,
+            description: event.description,
+            date: event.date,
+            time: event.time,
+            venue: event.venue,
+            organizer: event.organizer,
+            category: event.category,
+            attendees: event.attendees || 0,
+            isAttending: event.isAttending || false,
+            saved: saved.includes(event._id),
+            image: event.image || 'https://images.unsplash.com/photo-1511632765486-a01980e01a2c?w=600&h=300&fit=crop',
+            _raw: event,
+          }));
+          setEvents(transformed);
+        } else {
+          setEvents([]);
+        }
+      } catch (error) {
+        console.error('Failed to fetch events:', error);
+        setEvents([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchEvents();
+  }, [sortBy, saved]);
+
+  // Keep saved in localStorage only (UI state)
   useEffect(() => {
     localStorage.setItem('kwathu_events_saved', JSON.stringify(saved));
   }, [saved]);
@@ -94,18 +95,33 @@ function Events() {
     setTimeout(() => setToast(null), 3000);
   };
 
-  const handleAttend = (id) => {
+  const handleAttend = async (id) => {
     if (!user) {
       showToast('Sign in to RSVP to events', 'info');
       return;
     }
+    const event = events.find(e => e.id === id);
+    const wasAttending = event?.isAttending;
     setEvents((prev) =>
-      prev.map((event) =>
-        event.id === id
-          ? { ...event, isAttending: !event.isAttending, attendees: event.isAttending ? event.attendees - 1 : event.attendees + 1 }
-          : event
+      prev.map((e) =>
+        e.id === id
+          ? { ...e, isAttending: !wasAttending, attendees: wasAttending ? e.attendees - 1 : e.attendees + 1 }
+          : e
       )
     );
+    try {
+      await api.events.attend(id);
+    } catch (error) {
+      // Revert on error
+      setEvents((prev) =>
+        prev.map((e) =>
+          e.id === id
+            ? { ...e, isAttending: wasAttending, attendees: wasAttending ? e.attendees + 1 : e.attendees - 1 }
+            : e
+        )
+      );
+      showToast('Failed to RSVP', 'error');
+    }
   };
 
   const handleToggleSave = (id, e) => {
@@ -117,24 +133,46 @@ function Events() {
     setSaved((prev) => (prev.includes(id) ? prev.filter((s) => s !== id) : [...prev, id]));
   };
 
-  const handleCreateEvent = (e) => {
+  const handleCreateEvent = async (e) => {
     e.preventDefault();
     if (!user) {
       showToast('Sign in to create events', 'info');
       return;
     }
-    const event = {
-      id: Date.now(),
-      ...newEvent,
-      attendees: 1,
-      isAttending: true,
-      saved: false,
-      image: 'https://images.unsplash.com/photo-1511632765486-a01980e01a2c?w=600&h=300&fit=crop',
-    };
-    setEvents([event, ...events]);
-    setNewEvent({ title: '', description: '', date: '', time: '', venue: '', organizer: '', category: 'Community' });
-    setShowCreateForm(false);
-    showToast('Event created successfully');
+    try {
+      const response = await api.events.create({
+        title: newEvent.title,
+        description: newEvent.description,
+        date: newEvent.date,
+        time: newEvent.time,
+        venue: newEvent.venue,
+        organizer: newEvent.organizer,
+        category: newEvent.category,
+      });
+      if (response.success && response.event) {
+        const event = response.event;
+        const newEvt = {
+          id: event._id,
+          title: event.title,
+          description: event.description,
+          date: event.date,
+          time: event.time,
+          venue: event.venue,
+          organizer: event.organizer,
+          category: event.category,
+          attendees: event.attendees || 1,
+          isAttending: true,
+          saved: false,
+          image: event.image || 'https://images.unsplash.com/photo-1511632765486-a01980e01a2c?w=600&h=300&fit=crop',
+        };
+        setEvents([newEvt, ...events]);
+        setNewEvent({ title: '', description: '', date: '', time: '', venue: '', organizer: '', category: 'Community' });
+        setShowCreateForm(false);
+        showToast('Event created successfully');
+      }
+    } catch (error) {
+      showToast(error.message || 'Failed to create event', 'error');
+    }
   };
 
   const handleShare = (event, e) => {
@@ -274,28 +312,8 @@ function Events() {
                 <option value="popular">Most Popular</option>
                 <option value="saved">Saved First</option>
               </select>
-            </div>
-          </div>
-
-          <div className={styles.categoryTabs}>
-            <button className={`${styles.categoryTab} ${activeCategory === 'all' ? styles.categoryTabActive : ''}`} onClick={() => setActiveCategory('all')}>
-              All
-            </button>
-            {categories.map((cat) => {
-              const config = categoryConfig[cat];
-              return (
-                <button
-                  key={cat}
-                  className={`${styles.categoryTab} ${activeCategory === cat ? styles.categoryTabActive : ''}`}
-                  onClick={() => setActiveCategory(cat)}
-                  style={activeCategory === cat ? { background: config.bg, color: config.color, borderColor: config.color } : {}}
-                >
-                  <span>{config.icon}</span> {cat}
-                  <span className={styles.categoryCount}>{categoryCounts[cat] || 0}</span>
-                </button>
-              );
-            })}
-          </div>
+</div>
+        </div>
 
           <div className={styles.tabContent}>
             {filteredEvents.length === 0 ? (

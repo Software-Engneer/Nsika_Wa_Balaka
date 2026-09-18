@@ -757,6 +757,66 @@
   font-weight: 500;
 }
 
+.leagueSelectorBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #e2e8f0;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.leagueSelectorBar .tabs {
+  border-bottom: none;
+  padding-bottom: 0;
+  margin-bottom: 0;
+  flex-wrap: nowrap;
+  gap: 0.5rem;
+}
+
+.leagueDropdown {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.leagueLabel {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #475569;
+  white-space: nowrap;
+}
+
+.leagueSelect {
+  padding: 0.5rem 2rem 0.5rem 0.875rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #0f172a;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.5rem center;
+  background-size: 16px;
+  transition: all 0.2s ease;
+  min-width: 180px;
+}
+
+.leagueSelect:hover {
+  border-color: #38bdf8;
+}
+
+.leagueSelect:focus {
+  outline: none;
+  border-color: #0ea5e9;
+  box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.2);
+}
+
 @media (max-width: 768px) {
   .container {
     grid-template-columns: 1fr;

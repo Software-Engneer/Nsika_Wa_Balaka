@@ -104,6 +104,37 @@ export const api = {
       method: 'POST',
     }),
   },
+
+  events: {
+    getAll: (params = {}) => {
+      const query = new URLSearchParams(params).toString();
+      return request(`/api/events${query ? `?${query}` : ''}`);
+    },
+
+    getById: (id) => request(`/api/events/${id}`),
+
+    create: (data) => request('/api/events', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    }),
+
+    update: (id, data) => request(`/api/events/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(data),
+    }),
+
+    delete: (id) => request(`/api/events/${id}`, {
+      method: 'DELETE',
+    }),
+
+    attend: (id) => request(`/api/events/${id}/attend`, {
+      method: 'POST',
+    }),
+
+    share: (id) => request(`/api/events/${id}/share`, {
+      method: 'POST',
+    }),
+  },
 };
 
 export default api;
