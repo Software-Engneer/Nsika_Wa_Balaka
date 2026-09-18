@@ -14,8 +14,6 @@ const categoryConfig = {
   Agriculture: { icon: '🌾', color: '#22c55e', bg: '#f0fdf4' },
 };
 
-const categories = Object.keys(categoryConfig);
-
 function getRelativeTime(dateStr) {
   const date = new Date(dateStr);
   const now = new Date();
