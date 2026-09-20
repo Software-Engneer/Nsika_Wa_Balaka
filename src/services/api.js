@@ -180,6 +180,38 @@ export const api = {
       body: JSON.stringify(data),
     }),
   },
+
+  comments: {
+    getAll: (commentableType, commentableId, params = {}) => {
+      const query = new URLSearchParams({ commentableType, commentableId, ...params }).toString();
+      return request(`/api/comments?${query}`);
+    },
+
+    getById: (id) => request(`/api/comments/${id}`),
+
+    getCount: (commentableType, commentableId) => {
+      const query = new URLSearchParams({ commentableType, commentableId }).toString();
+      return request(`/api/comments/count?${query}`);
+    },
+
+    create: (data) => request('/api/comments', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    }),
+
+    update: (id, data) => request(`/api/comments/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(data),
+    }),
+
+    delete: (id) => request(`/api/comments/${id}`, {
+      method: 'DELETE',
+    }),
+
+    like: (id) => request(`/api/comments/${id}/like`, {
+      method: 'POST',
+    }),
+  },
 };
 
 export default api;

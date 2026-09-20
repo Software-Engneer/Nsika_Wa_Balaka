@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { api } from '../../services/api';
+import CommentSection from '../CommentSection';
 import styles from '../styles/News.module.css';
 
 const categoryConfig = {
@@ -323,6 +324,7 @@ function News() {
                   ↗ Share
                 </button>
               </div>
+              <CommentSection commentableType="News" commentableId={selectedArticle.id} />
             </div>
           </div>
         </div>

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { api } from '../../services/api';
+import CommentSection from '../CommentSection';
 import styles from '../styles/Sports.module.css';
 
 function Sports() {
@@ -9,6 +10,7 @@ function Sports() {
   const [searchQuery, setSearchQuery] = useState('');
   const [favoriteTeam, setFavoriteTeam] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [selectedNews, setSelectedNews] = useState(null);
 
   // Fetch leagues from API on mount
   useEffect(() => {
@@ -354,7 +356,7 @@ function Sports() {
                 <p className={styles.empty}>No sports news available.</p>
               ) : (
                 sportsNews.map((item) => (
-                  <div key={item.id} className={styles.newsCard}>
+                  <div key={item.id} className={styles.newsCard} onClick={() => setSelectedNews(item)}>
                     <h3 className={styles.newsTitle}>{item.title}</h3>
                     <p className={styles.newsExcerpt}>{item.excerpt}</p>
                     <div className={styles.newsFooter}>
@@ -364,6 +366,23 @@ function Sports() {
                   </div>
                 ))
               )}
+            </div>
+          )}
+
+          {selectedNews && (
+            <div className={styles.modalOverlay} onClick={() => setSelectedNews(null)}>
+              <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
+                <button className={styles.modalClose} onClick={() => setSelectedNews(null)}>✕</button>
+                <div className={styles.modalBody}>
+                  <h2 className={styles.modalTitle}>{selectedNews.title}</h2>
+                  <div className={styles.modalMeta}>
+                    <span className={styles.modalMetaItem}>{selectedNews.author}</span>
+                    <span className={styles.modalMetaItem}>{selectedNews.time}</span>
+                  </div>
+                  <p className={styles.modalDescription}>{selectedNews.excerpt}</p>
+                  <CommentSection commentableType="League" commentableId={selectedNews.id} />
+                </div>
+              </div>
             </div>
           )}
         </div>

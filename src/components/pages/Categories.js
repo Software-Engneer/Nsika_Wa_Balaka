@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { api } from '../../services/api';
+import CommentSection from '../CommentSection';
 import styles from '../styles/Categories.module.css';
 
 const categories = ['Clothes and Shoes', 'Furniture', 'Phones & Electronics', 'Building Materials'];
@@ -478,6 +479,7 @@ function Categories() {
                   🗑️ Delete this listing
                 </button>
               )}
+              <CommentSection commentableType="Listing" commentableId={selectedItem.id} />
             </div>
           </div>
         </div>
