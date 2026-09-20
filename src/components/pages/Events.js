@@ -11,8 +11,6 @@ const categoryConfig = {
   Education: { icon: '📚', color: '#ec4899', bg: 'rgba(236, 72, 153, 0.1)' },
 };
 
-const categories = Object.keys(categoryConfig);
-
 function getRelativeTime(dateStr) {
   const date = new Date(dateStr + 'T00:00:00');
   const now = new Date();
@@ -316,7 +314,13 @@ function Events() {
         </div>
 
           <div className={styles.tabContent}>
-            {filteredEvents.length === 0 ? (
+            {loading ? (
+              <div className={styles.emptyState}>
+                <div className={styles.emptyIcon}>⏳</div>
+                <h3 className={styles.emptyTitle}>Loading events...</h3>
+                <p className={styles.emptyText}>Please wait while we fetch the latest events.</p>
+              </div>
+            ) : filteredEvents.length === 0 ? (
               <div className={styles.emptyState}>
                 <div className={styles.emptyIcon}>📅</div>
                 <h3 className={styles.emptyTitle}>No events found</h3>
