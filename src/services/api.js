@@ -135,6 +135,51 @@ export const api = {
       method: 'POST',
     }),
   },
+
+  leagues: {
+    getAll: () => request('/api/leagues'),
+
+    getByKey: (key) => request(`/api/leagues/${key}`),
+
+    create: (data) => request('/api/leagues', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    }),
+
+    update: (key, data) => request(`/api/leagues/${key}`, {
+      method: 'PUT',
+      body: JSON.stringify(data),
+    }),
+
+    delete: (key) => request(`/api/leagues/${key}`, {
+      method: 'DELETE',
+    }),
+
+    addFixture: (key, data) => request(`/api/leagues/${key}/fixtures`, {
+      method: 'POST',
+      body: JSON.stringify(data),
+    }),
+
+    updateFixture: (key, fixtureId, data) => request(`/api/leagues/${key}/fixtures/${fixtureId}`, {
+      method: 'PUT',
+      body: JSON.stringify(data),
+    }),
+
+    addResult: (key, data) => request(`/api/leagues/${key}/results`, {
+      method: 'POST',
+      body: JSON.stringify(data),
+    }),
+
+    addStanding: (key, data) => request(`/api/leagues/${key}/standings`, {
+      method: 'POST',
+      body: JSON.stringify(data),
+    }),
+
+    addNews: (key, data) => request(`/api/leagues/${key}/news`, {
+      method: 'POST',
+      body: JSON.stringify(data),
+    }),
+  },
 };
 
 export default api;
