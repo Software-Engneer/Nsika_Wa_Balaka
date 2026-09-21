@@ -212,6 +212,30 @@ export const api = {
       method: 'POST',
     }),
   },
+
+  messages: {
+    getConversations: () => request('/api/messages/conversations'),
+
+    getUnreadCount: () => request('/api/messages/unread-count'),
+
+    getMessages: (otherUserId, params = {}) => {
+      const query = new URLSearchParams(params).toString();
+      return request(`/api/messages/${otherUserId}${query ? `?${query}` : ''}`);
+    },
+
+    send: (data) => request('/api/messages', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    }),
+
+    markRead: (messageId) => request(`/api/messages/${messageId}/read`, {
+      method: 'PUT',
+    }),
+
+    delete: (messageId) => request(`/api/messages/${messageId}`, {
+      method: 'DELETE',
+    }),
+  },
 };
 
 export default api;
