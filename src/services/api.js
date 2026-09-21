@@ -267,6 +267,27 @@ export const api = {
       method: 'POST',
     }),
   },
+
+  notifications: {
+    getAll: (params = {}) => {
+      const query = new URLSearchParams(params).toString();
+      return request(`/api/notifications${query ? `?${query}` : ''}`);
+    },
+
+    getUnreadCount: () => request('/api/notifications/unread-count'),
+
+    markRead: (id) => request(`/api/notifications/${id}/read`, {
+      method: 'PUT',
+    }),
+
+    markAllRead: () => request('/api/notifications/read-all', {
+      method: 'PUT',
+    }),
+
+    delete: (id) => request(`/api/notifications/${id}`, {
+      method: 'DELETE',
+    }),
+  },
 };
 
 export default api;
