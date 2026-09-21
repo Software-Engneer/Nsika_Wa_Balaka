@@ -87,6 +87,20 @@
   font-weight: 600;
 }
 
+.badge {
+  background: #ec4899;
+  color: white;
+  font-size: 0.65rem;
+  font-weight: 600;
+  padding: 0.125rem 0.5rem;
+  border-radius: 10px;
+  margin-left: auto;
+}
+
+.sidebarLink.active .badge {
+  background: rgba(236, 72, 153, 0.2);
+}
+
 .mainContent {
   min-width: 0;
 }

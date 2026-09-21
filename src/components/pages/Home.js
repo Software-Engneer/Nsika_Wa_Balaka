@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { api } from '../../services/api';
 import CommentSection from '../CommentSection';
@@ -38,6 +38,7 @@ function Home() {
   const [selectedPost, setSelectedPost] = useState(null);
   const [loading, setLoading] = useState(true);
   const [posting, setPosting] = useState(false);
+  const [notificationCount, setNotificationCount] = useState(0);
 
   const fetchPosts = async () => {
     try {
@@ -54,9 +55,22 @@ function Home() {
     }
   };
 
+  const fetchNotificationCount = useCallback(async () => {
+    if (!user) return;
+    try {
+      const response = await api.notifications.getUnreadCount();
+      if (response.success) {
+        setNotificationCount(response.count);
+      }
+    } catch (error) {
+      console.error('Failed to fetch notification count:', error);
+    }
+  }, [user]);
+
   useEffect(() => {
     fetchPosts();
-  }, []);
+    fetchNotificationCount();
+  }, [user, fetchNotificationCount]);
 
   useEffect(() => {
     localStorage.setItem('kwathu_liked_posts', JSON.stringify(likedPosts));
@@ -156,7 +170,7 @@ function Home() {
               <span>💬</span> Messages
             </a>
             <a href="/notifications" className={styles.sidebarLink}>
-              <span>🔔</span> Notifications
+              <span>🔔</span> Notifications {notificationCount > 0 && <span className={styles.badge}>{notificationCount}</span>}
             </a>
             <a href="/profile" className={styles.sidebarLink}>
               <span>👤</span> Profile

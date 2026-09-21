@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { api } from '../../services/api';
 import CommentSection from '../CommentSection';
@@ -36,6 +36,7 @@ function Categories() {
   const [toast, setToast] = useState(null);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
+  const [notificationCount, setNotificationCount] = useState(0);
 
   // Clear old localStorage key on mount
   useEffect(() => {
@@ -79,6 +80,22 @@ function Categories() {
     };
     fetchListings();
   }, []);
+
+  const fetchNotificationCount = useCallback(async () => {
+    if (!user) return;
+    try {
+      const response = await api.notifications.getUnreadCount();
+      if (response.success) {
+        setNotificationCount(response.count);
+      }
+    } catch (error) {
+      console.error('Failed to fetch notification count:', error);
+    }
+  }, [user]);
+
+  useEffect(() => {
+    fetchNotificationCount();
+  }, [user, fetchNotificationCount]);
 
   // Keep favorites in localStorage only
   useEffect(() => {
@@ -250,7 +267,7 @@ function Categories() {
             <a href="/events" className={styles.sidebarLink}><span>🎉</span> Events</a>
             <a href="/categories" className={`${styles.sidebarLink} ${styles.active}`}><span>🛒</span> Marketplace</a>
             <a href="/messages" className={styles.sidebarLink}><span>💬</span> Messages</a>
-            <a href="/notifications" className={styles.sidebarLink}><span>🔔</span> Notifications</a>
+            <a href="/notifications" className={styles.sidebarLink}><span>🔔</span> Notifications {notificationCount > 0 && <span className={styles.badge}>{notificationCount}</span>}</a>
             <a href="/profile" className={styles.sidebarLink}><span>👤</span> Profile</a>
           </nav>
         </div>

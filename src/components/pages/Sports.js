@@ -1,9 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
+import { useAuth } from '../../context/AuthContext';
 import { api } from '../../services/api';
 import CommentSection from '../CommentSection';
 import styles from '../styles/Sports.module.css';
 
 function Sports() {
+  const { user } = useAuth();
   const [leagues, setLeagues] = useState({});
   const [activeLeague, setActiveLeague] = useState('ngwangwa');
   const [activeTab, setActiveTab] = useState('fixtures');
@@ -11,6 +13,7 @@ function Sports() {
   const [favoriteTeam, setFavoriteTeam] = useState(null);
   const [loading, setLoading] = useState(true);
   const [selectedNews, setSelectedNews] = useState(null);
+  const [notificationCount, setNotificationCount] = useState(0);
 
   // Fetch leagues from API on mount
   useEffect(() => {
@@ -51,6 +54,22 @@ function Sports() {
     };
     fetchLeagues();
   }, [activeLeague]);
+
+  const fetchNotificationCount = useCallback(async () => {
+    if (!user) return;
+    try {
+      const response = await api.notifications.getUnreadCount();
+      if (response.success) {
+        setNotificationCount(response.count);
+      }
+    } catch (error) {
+      console.error('Failed to fetch notification count:', error);
+    }
+  }, [user]);
+
+  useEffect(() => {
+    fetchNotificationCount();
+  }, [user, fetchNotificationCount]);
 
   const league = leagues[activeLeague] || { fixtures: [], results: [], standings: [], teams: [], news: [] };
 
@@ -120,7 +139,7 @@ function Sports() {
             <a href="/sports" className={`${styles.sidebarLink} ${styles.active}`}><span>⚽</span> Sports</a>
             <a href="/categories" className={styles.sidebarLink}><span>🛒</span> Marketplace</a>
             <a href="/messages" className={styles.sidebarLink}><span>💬</span> Messages</a>
-            <a href="/notifications" className={styles.sidebarLink}><span>🔔</span> Notifications</a>
+            <a href="/notifications" className={styles.sidebarLink}><span>🔔</span> Notifications {notificationCount > 0 && <span className={styles.badge}>{notificationCount}</span>}</a>
             <a href="/profile" className={styles.sidebarLink}><span>👤</span> Profile</a>
           </nav>
         </div>

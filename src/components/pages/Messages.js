@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { api } from '../../services/api';
 import styles from '../styles/Messages.module.css';
@@ -12,6 +12,7 @@ function Messages() {
   const [sending, setSending] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [unreadCount, setUnreadCount] = useState(0);
+  const [notificationCount, setNotificationCount] = useState(0);
   const messagesEndRef = useRef(null);
   const messageInputRef = useRef(null);
 
@@ -37,6 +38,18 @@ function Messages() {
     }
   };
 
+  const fetchNotificationCount = useCallback(async () => {
+    if (!user) return;
+    try {
+      const response = await api.notifications.getUnreadCount();
+      if (response.success) {
+        setNotificationCount(response.count);
+      }
+    } catch (error) {
+      console.error('Failed to fetch notification count:', error);
+    }
+  }, [user]);
+
   const fetchMessages = async (otherUserId) => {
     try {
       const response = await api.messages.getMessages(otherUserId);
@@ -51,7 +64,8 @@ function Messages() {
   useEffect(() => {
     fetchConversations();
     fetchUnreadCount();
-  }, []);
+    fetchNotificationCount();
+  }, [user, fetchNotificationCount]);
 
   useEffect(() => {
     if (activeConversation) {
@@ -133,7 +147,7 @@ function Messages() {
             <a href="/sports" className={styles.sidebarLink}><span>⚽</span> Sports</a>
             <a href="/categories" className={styles.sidebarLink}><span>🛒</span> Marketplace</a>
             <a href="/messages" className={`${styles.sidebarLink} ${styles.active}`}><span>💬</span> Messages {unreadCount > 0 && <span className={styles.badge}>{unreadCount}</span>}</a>
-            <a href="/notifications" className={styles.sidebarLink}><span>🔔</span> Notifications</a>
+            <a href="/notifications" className={styles.sidebarLink}><span>🔔</span> Notifications {notificationCount > 0 && <span className={styles.badge}>{notificationCount}</span>}</a>
             <a href="/profile" className={styles.sidebarLink}><span>👤</span> Profile</a>
           </nav>
         </div>
