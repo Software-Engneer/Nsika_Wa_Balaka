@@ -236,6 +236,37 @@ export const api = {
       method: 'DELETE',
     }),
   },
+
+  posts: {
+    getAll: (params = {}) => {
+      const query = new URLSearchParams(params).toString();
+      return request(`/api/posts${query ? `?${query}` : ''}`);
+    },
+
+    getById: (id) => request(`/api/posts/${id}`),
+
+    create: (data) => request('/api/posts', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    }),
+
+    update: (id, data) => request(`/api/posts/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(data),
+    }),
+
+    delete: (id) => request(`/api/posts/${id}`, {
+      method: 'DELETE',
+    }),
+
+    like: (id) => request(`/api/posts/${id}/like`, {
+      method: 'POST',
+    }),
+
+    share: (id) => request(`/api/posts/${id}/share`, {
+      method: 'POST',
+    }),
+  },
 };
 
 export default api;
