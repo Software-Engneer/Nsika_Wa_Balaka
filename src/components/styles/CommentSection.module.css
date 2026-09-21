@@ -191,7 +191,7 @@
 .commentContent {
   font-size: 0.95rem;
   line-height: 1.5;
-  color: var(--text-primary, #1a1a1a);
+  color: #ffffff;
   margin: 0.5rem 0;
   white-space: pre-wrap;
   word-wrap: break-word;
@@ -232,6 +232,15 @@
 .replyCount {
   font-size: 0.8rem;
   color: var(--text-secondary, #888);
+}
+
+.replyContent {
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: #ffffff;
+  margin: 0.25rem 0;
+  white-space: pre-wrap;
+  word-wrap: break-word;
 }
 
 .replies {
