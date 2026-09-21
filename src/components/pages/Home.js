@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../../context/AuthContext';
+import CommentSection from '../CommentSection';
 import styles from '../styles/Home.module.css';
 
 const defaultPosts = [
@@ -54,6 +55,7 @@ function Home() {
     const saved = localStorage.getItem('kwathu_liked');
     return saved ? JSON.parse(saved) : [];
   });
+  const [selectedPost, setSelectedPost] = useState(null);
   const nextId = useRef(
     posts.reduce((max, post) => Math.max(max, post.id), 0) + 1
   );
@@ -97,6 +99,11 @@ function Home() {
     setLikedPosts((prev) =>
       prev.includes(id) ? prev.filter((l) => l !== id) : [...prev, id]
     );
+  };
+
+  const handleComment = (post) => {
+    if (!user) return;
+    setSelectedPost(post);
   };
 
   return (
@@ -200,6 +207,7 @@ function Home() {
                   </button>
                   <button
                     className={`${styles.postAction} ${!user ? styles.postActionDisabled : ''}`}
+                    onClick={() => handleComment(post)}
                     title={!user ? 'Sign in to comment' : ''}
                   >
                     <span>💬</span> {post.comments}
@@ -233,6 +241,27 @@ function Home() {
             </div>
           </div>
         </div>
+
+        {selectedPost && (
+          <div className={styles.modalOverlay} onClick={() => setSelectedPost(null)}>
+            <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
+              <button className={styles.modalClose} onClick={() => setSelectedPost(null)}>✕</button>
+              <div className={styles.modalBody}>
+                <div className={styles.modalPost}>
+                  <div className={styles.modalPostHeader}>
+                    <div className={styles.modalPostAvatar}>{selectedPost.avatar}</div>
+                    <div>
+                      <h4 className={styles.modalPostAuthor}>{selectedPost.author}</h4>
+                      <span className={styles.modalPostTime}>{selectedPost.time}</span>
+                    </div>
+                  </div>
+                  <p className={styles.modalPostContent}>{selectedPost.content}</p>
+                </div>
+                <CommentSection commentableType="Post" commentableId={selectedPost.id} />
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
