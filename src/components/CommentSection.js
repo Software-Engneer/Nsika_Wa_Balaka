@@ -1,8 +1,10 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { api } from '../services/api';
+import { useAuth } from '../context/AuthContext';
 import styles from './styles/CommentSection.module.css';
 
 function CommentSection({ commentableType, commentableId }) {
+  const { user } = useAuth();
   const [comments, setComments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [posting, setPosting] = useState(false);
@@ -12,7 +14,6 @@ function CommentSection({ commentableType, commentableId }) {
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [commentCount, setCommentCount] = useState(0);
-  const [user, setUser] = useState(null);
 
   const fetchComments = useCallback(async () => {
     try {
@@ -45,15 +46,6 @@ function CommentSection({ commentableType, commentableId }) {
   }, [commentableType, commentableId]);
 
   useEffect(() => {
-    const token = localStorage.getItem('kwathu_token');
-    if (token) {
-      try {
-        const payload = JSON.parse(atob(token.split('.')[1]));
-        setUser({ id: payload.id, name: payload.name, avatar: payload.avatar });
-      } catch (e) {
-        setUser(null);
-      }
-    }
     fetchComments();
     fetchCount();
   }, [commentableType, commentableId, page, fetchComments, fetchCount]);
@@ -169,10 +161,10 @@ function CommentSection({ commentableType, commentableId }) {
       <div className={styles.commentHeader}>
         <div className={styles.authorInfo}>
           <div className={styles.avatar}>
-            {comment.author?.avatar || comment.author?.name?.[0]?.toUpperCase() || 'U'}
+            {comment.author?.avatar || comment.author?.fullName?.[0]?.toUpperCase() || 'U'}
           </div>
           <div>
-            <span className={styles.authorName}>{comment.author?.name || 'Unknown'}</span>
+            <span className={styles.authorName}>{comment.author?.fullName || 'Unknown'}</span>
             <span className={styles.commentTime}>{formatDate(comment.createdAt)}</span>
           </div>
         </div>
@@ -232,7 +224,7 @@ function CommentSection({ commentableType, commentableId }) {
       {user ? (
         <form className={styles.commentForm} onSubmit={handleSubmit}>
           <div className={styles.avatar}>
-            {user.avatar || user.name?.[0]?.toUpperCase() || 'U'}
+            {user.avatar || user.fullName?.[0]?.toUpperCase() || 'U'}
           </div>
           <div className={styles.formContent}>
             <textarea
